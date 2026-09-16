@@ -8,8 +8,12 @@ const base =
   "min-h-11"; // 44px minimum touch target
 
 const tones = {
-  /** Red is rationed. This is one of the few places it appears. */
-  primary: "bg-alert text-white hover:bg-[#ff2a32]",
+  /**
+   * Red is rationed; this is one of the few places it appears. The fill uses
+   * alert-surface rather than the brand red so white label text clears AA —
+   * on the brand red it lands at 4.38:1, just under.
+   */
+  primary: "bg-alert-surface text-white hover:bg-alert",
   outline: "hairline border text-ink hover:border-line-strong hover:bg-surface-1",
   quiet: "text-ink-muted hover:text-ink",
 } as const;

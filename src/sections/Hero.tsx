@@ -65,10 +65,14 @@ export function Hero() {
               </LinkButton>
             </div>
 
-            {/* Visible phone number, not hidden behind an icon. */}
+            {/*
+              Visible phone number, not hidden behind an icon — and a full 44px
+              target. On a site whose primary conversion is a phone call, the
+              number cannot be a 28px inline link.
+            */}
             <a
               href={telHref}
-              className="text-ink hover:text-alert mt-7 inline-flex items-center gap-2.5 text-lg font-medium transition-colors duration-250"
+              className="text-ink hover:text-alert -ml-1 mt-5 inline-flex min-h-11 items-center gap-2.5 px-1 text-lg font-medium transition-colors duration-250"
             >
               <PhoneIcon width={18} height={18} />
               {business.phoneDisplay}

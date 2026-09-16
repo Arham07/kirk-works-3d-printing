@@ -24,7 +24,7 @@ export function CallBar() {
       </a>
       <a
         href={smsHref(`Hi Kirk, I'd like a quote for: `)}
-        className="bg-alert flex min-h-14 items-center justify-center gap-2.5 text-[0.9375rem] font-medium text-white"
+        className="bg-alert-surface flex min-h-14 items-center justify-center gap-2.5 text-[0.9375rem] font-medium text-white"
       >
         <MessageIcon width={18} height={18} />
         Text a photo

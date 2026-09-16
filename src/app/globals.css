@@ -20,8 +20,16 @@
   --n-10: #a8a89c; /* muted body, mono spec labels */
   --n-11: #f2f1ec; /* primary text — warm off-white, never #fff */
 
-  --alert: #ed1c24; /* Kirk's brand red. Rationed, not decorative. */
-  --alert-ink: #ff4a50; /* red for <14px text; #ed1c24 fails contrast small */
+  --alert: #ed1c24; /* Kirk's brand red, exactly as printed on his cards. */
+  /*
+    Three reds, because one cannot pass contrast in all three roles:
+    - --alert         the brand mark itself: outlined headlines, rules, large marks
+    - --alert-surface filled buttons. White on #ed1c24 is 4.38:1, just under AA;
+                      this is 4.85:1 and indistinguishable side by side.
+    - --alert-ink     red TEXT on the dark page at small sizes (5.92:1).
+  */
+  --alert-surface: #e01920;
+  --alert-ink: #ff4a50;
   --signal: #ffb020; /* amber: demonstration pieces, in-progress, caution */
 
   /* Hairlines track their context and survive the theme flip. */
@@ -50,6 +58,7 @@
   --color-ink: var(--n-11);
 
   --color-alert: var(--alert);
+  --color-alert-surface: var(--alert-surface);
   --color-alert-ink: var(--alert-ink);
   --color-signal: var(--signal);
 

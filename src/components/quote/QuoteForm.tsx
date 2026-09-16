@@ -150,7 +150,7 @@ export function QuoteForm() {
                 className={
                   "min-h-11 rounded-control border px-4 text-[0.9375rem] transition-colors duration-250 " +
                   (active
-                    ? "border-alert bg-alert text-white"
+                    ? "border-alert-surface bg-alert-surface text-white"
                     : "hairline text-ink-muted hover:border-line-strong hover:text-ink")
                 }
               >
