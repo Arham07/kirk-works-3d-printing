@@ -66,7 +66,12 @@ setTimeout(function(){if(!d.hasAttribute('data-motion-ready'))d.dataset.motion='
       </head>
       <body className="flex min-h-full flex-col">
         <SiteHeader />
-        <main className="flex-1 pt-16">{children}</main>
+        {/* id="top" is the footer's back-to-top target. Lenis is configured
+            anchors: true, so fine pointers get a smooth scroll for free and
+            touch gets a native jump — zero JavaScript of our own. */}
+        <main id="top" className="flex-1 pt-16">
+          {children}
+        </main>
         <SiteFooter />
         <CallBar />
         <MotionRoot />

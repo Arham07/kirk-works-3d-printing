@@ -75,6 +75,19 @@ export const MailIcon = (p: SVGProps<SVGSVGElement>) => (
   </Glyph>
 );
 
+export const ArrowUpIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Glyph {...p}>
+    <path d="M12 20.5v-17M6 10l6-6.5 6 6.5" />
+  </Glyph>
+);
+
+/** Only ever used on links that leave the site — it means "external". */
+export const ArrowUpRightIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Glyph {...p}>
+    <path d="M6.5 17.5 17.5 6.5M8 6.5h9.5V16" />
+  </Glyph>
+);
+
 export const PinIcon = (p: SVGProps<SVGSVGElement>) => (
   <Glyph {...p}>
     <path d="M12 21s6.5-6 6.5-11a6.5 6.5 0 1 0-13 0c0 5 6.5 11 6.5 11Z" />

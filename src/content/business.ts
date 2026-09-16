@@ -35,6 +35,11 @@ export const business = {
   domain: "kirkworks3d.com",
   siteUrl: "https://www.kirkworks3d.com",
 
+  /** IANA zone for the footer clock. Helena is US Central. */
+  timeZone: "America/Chicago",
+  /** Printed on the back of his business card. */
+  cardLine: "Design · Print · Create · Repeat",
+
   /** Confirmed from the existing site copy. */
   machineCount: 3,
   filamentChoices: "100+",
