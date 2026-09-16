@@ -4,6 +4,7 @@ import { CallBar } from "@/components/cta/CallBar";
 import { SiteFooter } from "@/components/nav/SiteFooter";
 import { SiteHeader } from "@/components/nav/SiteHeader";
 import { JsonLd, localBusinessSchema } from "@/lib/schema";
+import { MotionRoot } from "@/motion/MotionRoot";
 import { fontVariables } from "./fonts";
 import "./globals.css";
 
@@ -36,7 +37,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fontVariables} h-full`}>
+    // suppressHydrationWarning is required, not incidental: the inline script
+    // below adds `js` to this element before React hydrates, so the server and
+    // live classNames legitimately differ. Scoped to <html> alone — it
+    // suppresses nothing inside the page.
+    <html
+      lang="en"
+      className={`${fontVariables} h-full`}
+      suppressHydrationWarning
+    >
       <head>
         {/*
           Runs before first paint. Adding `.js` here is what lets the reveal
@@ -46,10 +55,11 @@ export default function RootLayout({
         */}
         <script
           dangerouslySetInnerHTML={{
-            __html:
-              "document.documentElement.classList.add('js');" +
-              "if(matchMedia('(prefers-reduced-motion: reduce)').matches)" +
-              "document.documentElement.dataset.motion='off';",
+            __html: `(function(){var d=document.documentElement;d.classList.add('js');
+var c=navigator.connection||{};
+if(matchMedia('(prefers-reduced-motion: reduce)').matches||c.saveData===true||/(^|-)2g$/.test(c.effectiveType||'')){d.dataset.motion='off';return}
+d.dataset.motion='on';
+setTimeout(function(){if(!d.hasAttribute('data-motion-ready'))d.dataset.motion='off'},2500)})();`,
           }}
         />
         <JsonLd data={localBusinessSchema()} />
@@ -59,6 +69,7 @@ export default function RootLayout({
         <main className="flex-1 pt-16">{children}</main>
         <SiteFooter />
         <CallBar />
+        <MotionRoot />
       </body>
     </html>
   );

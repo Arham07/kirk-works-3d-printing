@@ -252,19 +252,28 @@
 }
 
 /* ==========================================================================
-   MOTION PRE-STATE — deliberately NOT here yet.
+   MOTION PRE-STATE
 
-   [data-reveal] and [data-draw] hooks are already in the markup, but the CSS
-   that hides them ships in the same change as the motion layer that reveals
-   them. Landing the pre-state first makes every section below the fold
-   invisible, which is precisely the "motion papers over the static design"
-   failure this build is sequenced to avoid.
+   Gated on [data-motion="on"], which the inline head script sets before first
+   paint only when motion is actually going to run. Three consequences:
 
-   When the motion layer lands, the pre-state keys off an explicit
-   [data-motion="on"] set by the inline head script (so there is no
-   server-visible → hidden → fade flash), with a failsafe that reveals
-   everything if the motion chunk never initialises.
-
-   Until then: every section is visible, and the static page has to stand up
-   on its own.
+   - No SSR flash. The server HTML is already in its pre-animation state, so
+     content never paints visible, blanks, then fades back in.
+   - Reduced-motion, Save-Data and 2G visitors never match this at all, so
+     they get finished, fully visible content and the GSAP chunk is never
+     even fetched.
+   - If the motion chunk fails to load, the script's failsafe flips the
+     attribute to "off" and everything becomes visible. Content is never
+     stranded behind JavaScript that did not arrive.
    ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  .js[data-motion="on"] [data-reveal] {
+    opacity: 0;
+    /*
+      transform, NOT the `translate` property. GSAP's `y` writes to transform,
+      so using `translate` here would leave the 24px offset in place after the
+      reveal ran — the element would fade in and then sit permanently low.
+    */
+    transform: translateY(1.5rem);
+  }
+}

@@ -36,11 +36,13 @@ export function Hero() {
           Full width, because the display face is the whole visual argument and
           a two-column hero strangles it into four lines.
 
-          The two lines are manual and must stay two lines: min-block-size
-          reserves the space so the font swap — which changes glyph widths,
-          harmlessly — can never change the line count and shift the page.
+          The break is manual, but below ~570px the clamp floor is wide enough
+          that each line wraps again, giving four lines — which reads well on a
+          phone, so it stays. The reservation therefore has to match reality at
+          each breakpoint: reserving two lines everywhere would leave the font
+          swap free to change the line count and shift the page.
         */}
-        <h1 className="font-display text-display-1 text-ink mt-7 uppercase [min-block-size:calc(2*0.92em)]">
+        <h1 className="font-display text-display-1 text-ink mt-7 uppercase [min-block-size:calc(4*0.92em)] sm:[min-block-size:calc(2*0.92em)]">
           {hero.headline[0]}
           <br />
           <span className="text-outline-alert">{hero.headline[1]}</span>

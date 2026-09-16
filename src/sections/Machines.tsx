@@ -87,17 +87,34 @@ export function Machines() {
                 {machine.name}
               </h3>
               <dl className="mono-label mt-5">
-                {rows.map((row) => (
-                  <div
-                    key={row.key}
-                    className="hairline flex items-baseline justify-between gap-4 border-t py-2.5"
-                  >
-                    <dt className="text-ink-icon">{row.label}</dt>
-                    <dd className="text-ink-muted text-right">
-                      <SpecValue value={machine[row.key]} />
-                    </dd>
-                  </div>
-                ))}
+                {rows.map((row) => {
+                  // "Best for" is a sentence, not a measurement. Left in mono
+                  // uppercase it collides with its own label and is painful to
+                  // read, so prose rows stack and drop back to body casing.
+                  const isProse = row.key === "bestFor";
+                  return (
+                    <div
+                      key={row.key}
+                      className={
+                        "hairline border-t py-2.5 " +
+                        (isProse
+                          ? ""
+                          : "flex items-baseline justify-between gap-4")
+                      }
+                    >
+                      <dt className="text-ink-icon">{row.label}</dt>
+                      <dd
+                        className={
+                          isProse
+                            ? "text-ink-muted mt-1.5 font-body text-[0.9375rem] leading-relaxed normal-case tracking-normal"
+                            : "text-ink-muted text-right"
+                        }
+                      >
+                        <SpecValue value={machine[row.key]} />
+                      </dd>
+                    </div>
+                  );
+                })}
               </dl>
             </li>
           ))}

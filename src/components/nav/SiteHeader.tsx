@@ -46,9 +46,18 @@ export function SiteHeader() {
             <PhoneIcon width={16} height={16} />
             {business.phoneDisplay}
           </a>
-          <LinkButton href="/quote/" className="hidden px-5 py-2.5 sm:inline-flex">
-            Get a quote
-          </LinkButton>
+          {/*
+            Visibility lives on a wrapper, not on the button. `hidden` and the
+            button's own `inline-flex` are both display utilities, so which one
+            wins is decided by stylesheet order rather than by the order they
+            appear in the class attribute — the button was staying visible at
+            375px and colliding with the logo.
+          */}
+          <span className="hidden sm:block">
+            <LinkButton href="/quote/" className="px-5 py-2.5">
+              Get a quote
+            </LinkButton>
+          </span>
 
           <button
             popoverTarget="mobile-nav"
