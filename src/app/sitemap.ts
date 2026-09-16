@@ -7,9 +7,14 @@ export const dynamic = "force-static";
 
 /** Emitted as a static file under `output: "export"`. */
 export default function sitemap(): MetadataRoute.Sitemap {
-  // Only routes that actually exist. The four service routes get added here
-  // as they ship — submitting a sitemap full of 404s is worse than a short one.
-  const routes = ["", "/quote"];
+  const routes = [
+    "",
+    "/quote",
+    "/custom-3d-printing",
+    "/hueforge-photo-art",
+    "/3d-printing-lessons",
+    "/corporate-3d-printing",
+  ];
 
   return routes.map((route) => ({
     url: `${business.siteUrl}${route}/`,
