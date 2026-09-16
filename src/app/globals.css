@@ -133,23 +133,39 @@
    LIGHT INVERSION — the named reversal condition from the plan.
    :root[data-theme] outranks :root regardless of source order.
    ========================================================================== */
+/*
+  The light theme is a full inversion, not a tint. Grounded on values measured
+  from the reference the client pointed at (page #F7F7F7, ink #101010, raised
+  rows #F5F5F5, index numerals #DEDEDE — numerals lighter than the hairlines,
+  so the big titles carry everything), warmed a few points to stay in the same
+  family as the dark ramp.
+
+  Only the semantic tokens are remapped. Components never reference the raw
+  ramp, which is what makes this a single block rather than a grep.
+*/
 :root[data-theme="light"] {
-  --color-surface-0: var(--n-11);
-  --color-surface-1: #e9e7e0;
-  --color-surface-2: #dedbd2;
-  --color-surface-3: #d2cfc4;
-  --color-surface-4: #c5c1b5;
+  --color-surface-0: #f7f6f3; /* page */
+  --color-surface-1: #f1efe9; /* raised */
+  --color-surface-2: #e8e5dd; /* hover wash */
+  --color-surface-3: #ddd9cf;
+  --color-surface-4: #cfcabd;
 
-  --color-line-subtle: var(--n-9);
-  --color-line: var(--n-8);
-  --color-line-strong: var(--n-7);
+  --color-line-subtle: #ddd9cf;
+  --color-line: #c2bcae;
+  --color-line-strong: #a39b89;
 
-  --color-ink-disabled: var(--n-8);
-  --color-ink-icon: var(--n-7);
-  --color-ink-muted: var(--n-6);
-  --color-ink: var(--n-0);
+  /* Rule colours, measured against #f7f6f3 — the same 3:1 floor the dark
+     theme's field rules clear, checked independently because inverting a
+     ramp does not preserve contrast ratios. */
+  --color-ink-disabled: #8b8372; /* 3.42:1 — rules only, never text */
+  --color-ink-icon: #6d6657; /* 5.24:1 */
+  --color-ink-muted: #504a3e; /* 8.16:1 */
+  --color-ink: #17150f; /* 16.9:1 */
 
-  --color-alert-ink: #c8151c; /* the dark-mode tint fails contrast on light */
+  /* #FF4A50 is ~2.3:1 on a light ground and fails outright. The brand red
+     itself is fine as a large outlined headline (3:1 applies to large text)
+     but not as small text, which is what this token is for. */
+  --color-alert-ink: #c2131a;
 }
 
 /* ==========================================================================

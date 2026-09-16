@@ -56,6 +56,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(){var d=document.documentElement;d.classList.add('js');
+try{if(localStorage.getItem('kw3d:theme')==='light')d.dataset.theme='light'}catch(e){}
 var c=navigator.connection||{};
 if(matchMedia('(prefers-reduced-motion: reduce)').matches||c.saveData===true||/(^|-)2g$/.test(c.effectiveType||'')){d.dataset.motion='off';return}
 d.dataset.motion='on';
@@ -64,7 +65,15 @@ setTimeout(function(){if(!d.hasAttribute('data-motion-ready'))d.dataset.motion='
         />
         <JsonLd data={localBusinessSchema()} />
       </head>
-      <body className="flex min-h-full flex-col">
+      {/*
+        suppressHydrationWarning on <body> as well as <html>: browser
+        extensions inject attributes here before React hydrates — the reported
+        mismatch was cz-shortcut-listen="true", added by ColorZilla. Nothing in
+        our own tree differs between server and client, and React cannot tell
+        the difference, so this is the only way to silence a warning we do not
+        cause. Scoped to this element only; it suppresses nothing inside.
+      */}
+      <body className="flex min-h-full flex-col" suppressHydrationWarning>
         <SiteHeader />
         {/* id="top" is the footer's back-to-top target. Lenis is configured
             anchors: true, so fine pointers get a smooth scroll for free and

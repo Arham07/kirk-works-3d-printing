@@ -2,6 +2,7 @@ import { business, telHref } from "@/content/business";
 import { LinkButton } from "@/design/Button";
 import { LogoLockup } from "@/design/Logo";
 import { CloseIcon, MenuIcon, PhoneIcon } from "@/design/icons";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const nav = [
   { href: "/#work", label: "Work" },
@@ -53,6 +54,8 @@ export function SiteHeader() {
             appear in the class attribute — the button was staying visible at
             375px and colliding with the logo.
           */}
+          <ThemeToggle />
+
           <span className="hidden sm:block">
             <LinkButton href="/quote/" className="px-5 py-2.5">
               Get a quote
