@@ -85,30 +85,20 @@ function initReveals() {
   });
 }
 
-/**
- * B — masked line rise. Used in exactly three places: the SERVICES word, the
- * contact headline stack, and the footer phone number. Each is an element
- * whose line count is AUTHORED in the markup, never computed, which is why
- * this needs no text splitting and no fonts.ready dependency.
+/*
+ * B — the masked line rise — is deliberately NOT here. It is pure CSS, via
+ * animation-timeline: view(), in globals.css.
+ *
+ * It was built with ScrollTrigger first and the trigger would not fire. Lenis
+ * owns the scroll position, and a trigger element displaced by its own
+ * pre-state transform measures its start against the moved box, so the
+ * headline stayed parked in its from-state through every scroll.
+ *
+ * A scroll-driven CSS animation has no measurement step, no dependency on
+ * Lenis, and cannot get stuck: where view() is unsupported the text is simply
+ * visible, which is the correct fallback anyway.
  */
-function initRises() {
-  ScrollTrigger.batch("[data-rise-mask] > [data-rise]", {
-    start: "top 90%",
-    once: true,
-    batchMax: 4,
-    interval: 0.06,
-    onEnter: (elements) => {
-      // fromTo, NOT to. getComputedStyle resolves the CSS translateY(105%) to
-      // a pixel matrix, which GSAP reads as `y` in px; tweening yPercent on
-      // top of that would land the line 105% below where it belongs.
-      gsap.fromTo(
-        elements,
-        { yPercent: 105 },
-        { yPercent: 0, duration: 0.9, stagger: 0.09, ease: EASE, overwrite: true },
-      );
-    },
-  });
-}
+
 
 /** C — section rules draw in from the left as they enter. */
 function initRules() {
@@ -199,7 +189,6 @@ export function initMotion() {
   mm.add("(prefers-reduced-motion: no-preference)", () => {
     const stopLenis = initLenis();
     initReveals();
-    initRises();
     initRules();
     initPlates();
     initCounters();
@@ -224,7 +213,6 @@ export function initMotion() {
   // pre-state is snapped to its final state.
   mm.add("(prefers-reduced-motion: reduce)", () => {
     gsap.set("[data-reveal]", { opacity: 1, y: 0, clearProps: "all" });
-    gsap.set("[data-rise]", { yPercent: 0, clearProps: "all" });
     gsap.set("[data-rule]", { scaleX: 1, clearProps: "all" });
     gsap.set("[data-plate]", { clipPath: "none" });
     document.documentElement.dataset.motion = "off";

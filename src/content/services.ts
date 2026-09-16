@@ -8,6 +8,11 @@ import type { Service } from "./types";
  * paragraph may appear on two URLs, or the pages compete and Google picks the
  * wrong one.
  */
+/**
+ * Revenue order, not alphabetical and not the order they were written. This
+ * array drives the services index, the footer rail and the sitemap, so the
+ * first row is the one that gets the most attention on the page.
+ */
 export const services = [
   {
     id: "custom",
@@ -24,61 +29,43 @@ export const services = [
       "Transform a favorite photograph into remarkable layered artwork with color, depth and texture.",
   },
   {
-    id: "lessons",
-    slug: "3d-printing-lessons",
-    title: "Private 3D Printing Lessons",
-    teaser:
-      "Friendly, personalized instruction covering printers, slicing, materials, Bambu Studio and HueForge.",
-  },
-  {
     id: "corporate",
     slug: "corporate-3d-printing",
     title: "Corporate & Custom Projects",
     teaser:
       "Branded products, awards, prototypes, presentation models and custom production for organizations.",
   },
+  {
+    id: "lessons",
+    slug: "3d-printing-lessons",
+    title: "Private 3D Printing Lessons",
+    teaser:
+      "Friendly, personalized instruction covering printers, slicing, materials, Bambu Studio and HueForge.",
+  },
 ] as const satisfies readonly Service[];
 
 /**
- * Capability categories are deliberately organised by USE CASE, not by object.
- * A visitor needs to recognise their own need in a category Kirk may never
- * have literally printed before.
+ * `capabilities` used to live here — six use-case cards on the home page.
+ * Deleted, for two reasons. Every one of the six strings was already said at
+ * greater length in the `covers` array of the route it pointed at, and the
+ * six cards between them linked to only three of the four routes, omitting
+ * /3d-printing-lessons/ entirely. The services index replaces them.
  */
-export const capabilities = [
-  {
-    id: "gifts",
-    name: "Personalized gifts",
-    body: "Something made for one person, that cannot be bought anywhere.",
-    service: "custom-3d-printing",
-  },
-  {
-    id: "repairs",
-    name: "Functional parts & repairs",
-    body: "The bracket, knob or clip that broke and is no longer sold. Send a photo.",
-    service: "custom-3d-printing",
-  },
-  {
-    id: "displays",
-    name: "Displays & signs",
-    body: "Stands, plaques, lettering and shelf pieces built around what you care about.",
-    service: "custom-3d-printing",
-  },
-  {
-    id: "prototypes",
-    name: "Prototypes",
-    body: "A physical version of the thing you are trying to explain to someone.",
-    service: "corporate-3d-printing",
-  },
-  {
-    id: "awards",
-    name: "Awards & corporate",
-    body: "Branded pieces, recognition awards and presentation models, in quantity.",
-    service: "corporate-3d-printing",
-  },
-  {
-    id: "photoart",
-    name: "Photo art",
-    body: "A photograph rebuilt as a physical object in layers of colored filament.",
-    service: "hueforge-photo-art",
-  },
-] as const;
+
+/**
+ * Everything the services index needs, derived from data that already exists.
+ * No new prose: the eyebrow and cover labels come from each route's own
+ * content module, and the part numbers come from the pieces those routes
+ * already reference.
+ *
+ * Only `covers[].name` crosses a URL boundary, and those are two-to-four-word
+ * labels rather than sentences, so the no-duplicate-copy rule still holds.
+ */
+export type ServiceIndexEntry = Service & {
+  eyebrow: string;
+  covers: readonly string[];
+  partNumbers: readonly string[];
+  /** Row 04 only — the best sentence in the content directory. */
+  pull?: string;
+};
+

@@ -435,15 +435,6 @@
     transform: translateY(1.5rem);
   }
 
-  /*
-    B — masked line rise. Only ever applied to elements whose line count is
-    AUTHORED, never computed, which is why no text splitting, no fonts.ready
-    dependency and no forced reflow are needed anywhere on this site.
-  */
-  .js[data-motion="on"] [data-rise-mask] > [data-rise] {
-    transform: translateY(105%);
-  }
-
   /* C — section rules draw in from the left. */
   .js[data-motion="on"] [data-rule] {
     transform: scaleX(0);
@@ -459,11 +450,43 @@
   }
 }
 
-/* Masks for B. Outside the media query: the wrapper must clip regardless, or
-   a rising line would be visible above its own container mid-tween. */
+/* ==========================================================================
+   B — THE MASKED LINE RISE
+
+   Pure CSS scroll-driven animation, not GSAP. Built with ScrollTrigger first
+   and it would not fire: Lenis owns the scroll position, and a trigger
+   element displaced by its own pre-state transform measures its start against
+   the moved box, so the headline sat parked in its from-state forever.
+
+   animation-timeline has no measurement step and no dependency on the scroll
+   library, so it cannot get stuck. Where view() is unsupported (Firefox
+   today) the text is simply visible — which is the correct fallback, and the
+   same state reduced-motion and no-JS visitors get.
+   ========================================================================== */
 [data-rise-mask] {
+  /* clip rather than hidden so the mask never becomes a scroll container. */
   overflow: clip;
-  /* clip rather than hidden so the mask never creates a scroll container. */
+}
+
+@keyframes kw-rise {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .js [data-rise-mask] > [data-rise] {
+      animation: kw-rise linear both;
+      animation-timeline: view();
+      /* Finishes well before the line reaches the middle of the screen, so
+         it is never still moving when the reader gets to it. */
+      animation-range: entry 8% cover 26%;
+    }
+  }
 }
 
 /* ==========================================================================
