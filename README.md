@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# kirk-works-3d-printing
 
-## Getting Started
+Website for **KirkWorks3D Print Studio** — an owner-operated custom 3D printing
+studio in Helena, Alabama. Custom prints, HueForge photo art, private lessons
+and corporate work.
 
-First, run the development server:
+The site's only job is to turn a visitor into a quote request, a call or a text.
+A large share of traffic arrives by scanning a QR code on a printed business
+card, so mobile and first paint on cellular are the primary constraints — not an
+afterthought.
+
+## Running it
+
+Requires Node 22 (see `.nvmrc`).
 
 ```bash
+nvm use
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+| Script | |
+|---|---|
+| `npm run dev` | Dev server |
+| `npm run build` | Static export to `out/` |
+| `npm run media` | Regenerate image derivatives from `assets/photos/` |
+| `npm run check:tbd` | List values still awaiting confirmation from the client |
+| `npm run lint` | ESLint |
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it is put together
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**Next.js 16, App Router, `output: "export"`.** Every route is pure content with
+no request-time input, so the build is a static `out/` directory that deploys to
+Vercel, Netlify, Cloudflare Pages or S3 with no adapter. That is also a
+guardrail: reaching for a route handler fails the build rather than quietly
+binding the project to one host.
 
-## Learn More
+**Six runtime dependencies.** `next`, `react`, `react-dom`, `clsx`, plus `gsap`
+and `lenis`, which are lazy-loaded and never in the initial chunk.
 
-To learn more about Next.js, take a look at the following resources:
+### Content lives outside components
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Everything a non-developer might want to change — copy, prices, machine specs,
+FAQ answers, contact details — is in `src/content/`, typed. No component
+contains a user-visible string. `src/content/business.ts` is the single source
+for name, phone, email and address; those must match the Google Business Profile
+character for character or local search treats it as a different business.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Unconfirmed values are visible, never invented
 
-## Deploy on Vercel
+The site's argument is that this work is *measurable*, so a single invented
+figure would discredit every real one. Values the client has not confirmed are
+the `TBD` sentinel from `src/content/types.ts`, and they render as an amber
+placeholder rather than a plausible guess.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run check:tbd            # report
+npm run check:tbd -- --strict  # exit 1 if any remain — run before deploying
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+There is a related rule in the media pipeline: **no AI-generated imagery of
+printers, parts or the studio.** Molten-polymer extrusion is something every
+current model gets subtly wrong, and every lessons customer would spot it.
+
+### Images
+
+Sources in `assets/photos/` are never served. `npm run media` grades, crops and
+resizes them into AVIF/WebP ladders in `public/media/` plus a typed manifest,
+and both are committed — which keeps `sharp` off the deploy critical path, so
+any host can build with no native dependencies. `<Photo>` reads width and height
+from the manifest, so layout shift is zero by construction.
+
+The global colour grade is one function in `scripts/lib/grade.mjs`. Bump
+`GRADE_VERSION` when changing it.
+
+### Motion
+
+`src/motion/MotionRoot.tsx` is the entire client boundary: it renders nothing
+and only decides *whether* to fetch GSAP. Because `src/motion/init.ts` is
+reached solely through `await import()`, it lands in its own chunk that the
+initial HTML never references. It is never fetched at all for reduced-motion,
+Save-Data or 2G visitors.
+
+Sections stay Server Components and opt in by attribute — `data-reveal`,
+`data-plate`, `data-rule` — so nothing in the page tree imports GSAP.
+
+Two hard rules:
+
+- **Nothing on the LCP path animates.** Chrome computes LCP from the painted,
+  unclipped intersection, so a fade or a clip mask disqualifies an element
+  while `transform` does not. The hero and `/quote` headlines paint finished.
+- **Every animated state has a valid finished state on the other side.** With
+  JavaScript off, reduced motion on, or the chunk failing to load, the page is
+  complete. An inline head script flips `data-motion="off"` after 2.5s if the
+  motion layer never initialises.
+
+### Themes
+
+Dark is the default and matches the client's printed business card. Light is a
+single remapped block of semantic tokens in `globals.css` — components never
+reference the raw colour ramp, which is what makes the inversion one block
+rather than a grep. The choice is applied before first paint by the inline head
+script, so there is no flash.
+
+## Still open
+
+- The quote form composes a message and hands it to the visitor's mail or SMS
+  client. Swapping in a real endpoint is one line in `src/lib/submit/index.ts`;
+  `http.adapter.ts` is already written against that interface.
+- Hosting is undecided, which is why the build is host-agnostic.
+- `npm run check:tbd` lists what is still needed from the client.
