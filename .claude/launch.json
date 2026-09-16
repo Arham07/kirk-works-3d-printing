@@ -1,0 +1,14 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "dev",
+      "runtimeExecutable": "/bin/sh",
+      "runtimeArgs": [
+        "-c",
+        "PATH=\"/Users/outstarttech/.nvm/versions/node/v22.23.2/bin:$PATH\" npm run dev -- --port 3100"
+      ],
+      "port": 3100
+    }
+  ]
+}
