@@ -1,8 +1,12 @@
 import { stack } from "@/content/home";
 import { PhotoCard } from "@/components/media/Photo";
 import { HueforgeStack } from "@/drawings/HueforgeStack";
+import { StackScrubber } from "@/sections/stack/StackScrubber";
 import { SpecValue } from "@/design/Spec";
 import { Container, Section } from "@/design/Section";
+
+/** Shared between the rail element and the scrubber that drives it. */
+const RAIL_ID = "stack-rail";
 
 /**
  * THE STACK — the section people should remember.
@@ -33,27 +37,38 @@ export function Stack() {
           <p className="text-deck text-ink-muted mt-7 text-pretty">{stack.body}</p>
         </div>
 
-        <div className="mt-16 grid items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
-          {/* The object, so the diagram is anchored to something real. */}
-          <div data-reveal>
-            <PhotoCard
-              slug="real-low-n-slow"
-              alt="The finished Low N Slow HueForge print, a 1982 Chevrolet C10 reproduced in layers of coloured filament"
-              sizes="(min-width: 1024px) 42vw, 100vw"
-              caption={
-                <>
-                  <p className="mono-label text-ink-icon">The object</p>
-                  <p className="text-ink mt-2 text-[0.9375rem]">
-                    {stack.piece.name} — {stack.piece.subject}
-                  </p>
-                </>
-              }
-            />
-          </div>
+        {/*
+          A CSS sticky rail, not a ScrollTrigger pin: no pin-spacer, no layout
+          thrash, and if the scrubber never loads this collapses to an ordinary
+          section with the diagram in its fully-exploded, fully-labelled state.
+          The tall rail only exists on pointer-fine viewports with room for it.
+        */}
+        <div id={RAIL_ID} className="mt-16 lg:relative lg:h-[260vh]">
+          <StackScrubber railId={RAIL_ID} />
+          <div className="lg:sticky lg:top-24 lg:flex lg:h-[calc(100vh-8rem)] lg:items-center">
+            <div className="grid w-full items-center gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-16">
+              {/* The object, so the diagram is anchored to something real. */}
+              <div data-reveal>
+                <PhotoCard
+                  slug="real-low-n-slow"
+                  alt="The finished Low N Slow HueForge print, a 1982 Chevrolet C10 reproduced in layers of coloured filament"
+                  sizes="(min-width: 1024px) 42vw, 100vw"
+                  caption={
+                    <>
+                      <p className="mono-label text-ink-icon">The object</p>
+                      <p className="text-ink mt-2 text-[0.9375rem]">
+                        {stack.piece.name} — {stack.piece.subject}
+                      </p>
+                    </>
+                  }
+                />
+              </div>
 
-          {/* The mechanism, which no photograph of a flat print can show. */}
-          <div data-reveal>
-            <HueforgeStack className="text-ink w-full" />
+              {/* The mechanism, which no photograph of a flat print can show. */}
+              <div data-reveal>
+                <HueforgeStack className="text-ink w-full" />
+              </div>
+            </div>
           </div>
         </div>
 

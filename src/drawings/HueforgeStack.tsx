@@ -8,8 +8,11 @@
  * top of them. That is a diagram, not a photograph — which is lucky, because
  * a diagram costs nothing in photography.
  *
- * Planes are generated as a radial-free isometric stack so the count can track
- * the real layer count once Kirk confirms it.
+ * Every plane's separation is driven by a single `--progress` custom property
+ * (0 = collapsed into one solid object, 1 = fully exploded). It defaults to 1,
+ * so with no JavaScript, reduced motion, or a failed chunk the diagram renders
+ * in its fully-explained state. The scroll layer only ever animates *between*
+ * two states that are both valid on their own.
  */
 
 const PLANE_COUNT = 21;
@@ -37,6 +40,7 @@ function diamond(cy: number) {
 
 export function HueforgeStack({ className }: { className?: string }) {
   const step = (BOTTOM_Y - TOP_Y) / (PLANE_COUNT - 1);
+  const collapsedY = BOTTOM_Y;
 
   return (
     <svg
@@ -47,65 +51,78 @@ export function HueforgeStack({ className }: { className?: string }) {
       role="img"
       aria-label="Diagram: a HueForge print exploded into its individual printed layers, each layer a single colour of filament, stacking into a full-colour image barely two millimetres thick."
     >
-      {/* Planes, bottom-most first so upper ones overlap correctly. */}
       <g>
         {Array.from({ length: PLANE_COUNT }, (_, index) => {
           const reversed = PLANE_COUNT - 1 - index;
-          const cy = TOP_Y + reversed * step;
+          const explodedY = TOP_Y + reversed * step;
           const fill = FILAMENTS[reversed % FILAMENTS.length];
+          // Drawn collapsed, then translated out to its exploded position by
+          // --progress. Transform-only, so separating the stack costs nothing
+          // but compositing.
+          const travel = explodedY - collapsedY;
           return (
             <polygon
               key={index}
-              points={diamond(cy)}
+              points={diamond(collapsedY)}
               fill={fill}
               fillOpacity={0.9}
               stroke="currentColor"
               strokeOpacity={0.28}
               strokeWidth={0.75}
+              style={{
+                transform: `translateY(calc(${travel} * var(--progress, 1) * 1px))`,
+              }}
             />
           );
         })}
       </g>
 
-      {/* Dimension line for total thickness, drawn in the technical register. */}
-      <g stroke="currentColor" strokeOpacity={0.5} strokeWidth={0.75} fill="none">
-        <line x1={CENTRE_X + HALF_W + 16} y1={TOP_Y} x2={CENTRE_X + HALF_W + 16} y2={BOTTOM_Y} />
-        <line x1={CENTRE_X + HALF_W + 11} y1={TOP_Y} x2={CENTRE_X + HALF_W + 21} y2={TOP_Y} />
-        <line
-          x1={CENTRE_X + HALF_W + 11}
-          y1={BOTTOM_Y}
-          x2={CENTRE_X + HALF_W + 21}
-          y2={BOTTOM_Y}
-        />
-        {/* Leader to a single layer. */}
-        <line x1={CENTRE_X - HALF_W - 12} y1={TOP_Y + step} x2={CENTRE_X - HALF_W - 52} y2={TOP_Y + step} />
+      {/* Callouts belong to the exploded state, so they fade in with it. */}
+      <g style={{ opacity: "var(--progress, 1)" }}>
+        <g stroke="currentColor" strokeOpacity={0.5} strokeWidth={0.75} fill="none">
+          <line x1={CENTRE_X + HALF_W + 16} y1={TOP_Y} x2={CENTRE_X + HALF_W + 16} y2={BOTTOM_Y} />
+          <line x1={CENTRE_X + HALF_W + 11} y1={TOP_Y} x2={CENTRE_X + HALF_W + 21} y2={TOP_Y} />
+          <line
+            x1={CENTRE_X + HALF_W + 11}
+            y1={BOTTOM_Y}
+            x2={CENTRE_X + HALF_W + 21}
+            y2={BOTTOM_Y}
+          />
+          <line
+            x1={CENTRE_X - HALF_W - 12}
+            y1={TOP_Y + step}
+            x2={CENTRE_X - HALF_W - 52}
+            y2={TOP_Y + step}
+          />
+        </g>
+
+        <text
+          x={CENTRE_X + HALF_W + 26}
+          y={(TOP_Y + BOTTOM_Y) / 2}
+          fill="currentColor"
+          fillOpacity={0.75}
+          fontSize="10"
+          fontFamily="var(--font-mono)"
+          letterSpacing="1"
+          dominantBaseline="middle"
+        >
+          TOTAL
+        </text>
+        <text
+          x={CENTRE_X - HALF_W - 58}
+          y={TOP_Y + step}
+          fill="currentColor"
+          fillOpacity={0.75}
+          fontSize="10"
+          fontFamily="var(--font-mono)"
+          letterSpacing="1"
+          textAnchor="end"
+          dominantBaseline="middle"
+        >
+          ONE LAYER
+        </text>
       </g>
 
-      <text
-        x={CENTRE_X + HALF_W + 26}
-        y={(TOP_Y + BOTTOM_Y) / 2}
-        fill="currentColor"
-        fillOpacity={0.75}
-        fontSize="10"
-        fontFamily="var(--font-mono)"
-        letterSpacing="1"
-        dominantBaseline="middle"
-      >
-        TOTAL
-      </text>
-      <text
-        x={CENTRE_X - HALF_W - 58}
-        y={TOP_Y + step}
-        fill="currentColor"
-        fillOpacity={0.75}
-        fontSize="10"
-        fontFamily="var(--font-mono)"
-        letterSpacing="1"
-        textAnchor="end"
-        dominantBaseline="middle"
-      >
-        ONE LAYER
-      </text>
       <text
         x={CENTRE_X}
         y={BOTTOM_Y + HALF_H + 30}
@@ -118,10 +135,11 @@ export function HueforgeStack({ className }: { className?: string }) {
       >
         LIGHT ENTERS HERE
       </text>
-      {/* Arrow indicating transmitted light, which is the whole mechanism. */}
       <g stroke="currentColor" strokeOpacity={0.45} strokeWidth={0.75} fill="none">
         <line x1={CENTRE_X} y1={BOTTOM_Y + HALF_H + 18} x2={CENTRE_X} y2={BOTTOM_Y + 6} />
-        <polyline points={`${CENTRE_X - 4},${BOTTOM_Y + 12} ${CENTRE_X},${BOTTOM_Y + 5} ${CENTRE_X + 4},${BOTTOM_Y + 12}`} />
+        <polyline
+          points={`${CENTRE_X - 4},${BOTTOM_Y + 12} ${CENTRE_X},${BOTTOM_Y + 5} ${CENTRE_X + 4},${BOTTOM_Y + 12}`}
+        />
       </g>
     </svg>
   );
