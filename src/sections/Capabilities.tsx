@@ -13,7 +13,7 @@ export function Capabilities() {
     <Section label="What can be made" id="capabilities">
       <Container>
         <SectionHead
-          number="03"
+          number="04"
           eyebrow="What can be made"
           headline="Ideas become something you can hold."
           deck="From one meaningful custom piece to larger corporate projects — combining modern equipment with genuine, down-home service."

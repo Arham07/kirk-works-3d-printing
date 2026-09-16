@@ -13,7 +13,7 @@ export function Process() {
     <Section label="Process" id="process">
       <Container>
         <SectionHead
-          number="06"
+          number="07"
           eyebrow="Simple from start to finish"
           headline="How your idea comes to life."
         />

@@ -16,7 +16,7 @@ export function Lessons() {
         <div className="grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:gap-20">
           <div data-reveal>
             <p className="mono-label flex items-center gap-3">
-              <span className="text-ink-icon">08</span>
+              <span className="text-ink-icon">09</span>
               <span aria-hidden className="h-px w-6 bg-current opacity-40" />
               {lessons.eyebrow}
             </p>

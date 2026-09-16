@@ -13,7 +13,7 @@ export function Faq() {
     <Section label="Common questions" id="faq">
       <Container>
         <SectionHead
-          number="09"
+          number="10"
           eyebrow="Before you ask"
           headline="The questions everyone has."
         />

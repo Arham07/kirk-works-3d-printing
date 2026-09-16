@@ -1,6 +1,7 @@
 import { Hero } from "@/sections/Hero";
 import { Thesis } from "@/sections/Thesis";
 import { FeaturedWork } from "@/sections/FeaturedWork";
+import { Stack } from "@/sections/Stack";
 import { Capabilities } from "@/sections/Capabilities";
 import { Machines } from "@/sections/Machines";
 import { Materials } from "@/sections/Materials";
@@ -16,6 +17,7 @@ export default function HomePage() {
       <Hero />
       <Thesis />
       <FeaturedWork />
+      <Stack />
       <Capabilities />
       <Machines />
       <Materials />

@@ -16,7 +16,7 @@ export function Pricing() {
     <Section label="Pricing" id="pricing">
       <Container>
         <SectionHead
-          number="07"
+          number="08"
           eyebrow="What it costs"
           headline={pricing.headline}
           deck={pricing.body}
