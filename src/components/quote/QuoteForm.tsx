@@ -169,7 +169,7 @@ export function QuoteForm() {
           02 — Tell Kirk about it
         </label>
         <p className="text-ink-muted mt-2 text-sm">
-          Two sentences is plenty — he&rsquo;ll ask the rest.
+          Two sentences is plenty — she&rsquo;ll ask the rest.
         </p>
 
         <div className="mt-4 flex flex-wrap gap-2">
@@ -209,7 +209,7 @@ export function QuoteForm() {
       </div>
 
       <div className="mt-12">
-        <p className="mono-label text-ink-icon">03 — How should he reach you?</p>
+        <p className="mono-label text-ink-icon">03 — How should she reach you?</p>
 
         <div className="mt-4 grid gap-5 sm:grid-cols-2">
           <Field

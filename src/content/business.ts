@@ -24,7 +24,7 @@ export const business = {
   phoneE164: "+12052292772",
 
   /**
-   * A yahoo.com address on the contact line of his own domain quietly
+   * A yahoo.com address on the contact line of her own domain quietly
    * undercuts every other trust signal. Kirk to approve the domain address;
    * until then the reachable one ships.
    */
@@ -37,7 +37,7 @@ export const business = {
 
   /** IANA zone for the footer clock. Helena is US Central. */
   timeZone: "America/Chicago",
-  /** Printed on the back of his business card. */
+  /** Printed on the back of her business card. */
   cardLine: "Design · Print · Create · Repeat",
 
   /** Confirmed from the existing site copy. */

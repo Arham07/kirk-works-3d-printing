@@ -36,7 +36,7 @@ export function Faq() {
           </div>
 
           {/*
-            Publishing what he will not take on reads as expertise rather than
+            Publishing what she will not take on reads as expertise rather than
             limitation, and it pre-filters the enquiries that would waste an
             evening.
           */}

@@ -25,7 +25,7 @@ export function SpecValue({ value }: { value: Confirmed<string> }) {
 /**
  * The mono spec strip. This is the site's core device: every image, card and
  * process step carries real measured values, because Kirk's expertise is
- * measurable and nobody else in his market publishes a single number.
+ * measurable and nobody else in her market publishes a single number.
  */
 export function SpecList({
   specs,

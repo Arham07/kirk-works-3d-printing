@@ -73,7 +73,7 @@ export const process = [
  * most common reason a service-site visitor leaves without enquiring, and
  * every commission craftsman worth studying publishes a range.
  *
- * Kirk sets these bands. They ship as TBD until he does.
+ * Kirk sets these bands. They ship as TBD until she does.
  */
 export const pricing = {
   headline: "What it costs",
@@ -124,7 +124,7 @@ export const pricing = {
  * Every number below must be Kirk's real number for this real piece. Shipping
  * an invented spec inside the most technical, most credibility-dependent
  * element on the site would be a worse version of the mistake this rebuild is
- * fixing. They stay TBD until he reads them off the project file.
+ * fixing. They stay TBD until she reads them off the project file.
  */
 export const stack = {
   eyebrow: "How a HueForge is made",

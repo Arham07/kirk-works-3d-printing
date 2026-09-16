@@ -27,7 +27,7 @@ import { ArrowUpIcon, ArrowUpRightIcon } from "@/design/icons";
 
 /**
  * Channels, not socials. Kirk has four real ones today and they are exactly
- * what a visitor holding his business card wants. A centred flex-wrap CANNOT
+ * what a visitor holding her business card wants. A centred flex-wrap CANNOT
  * have a hole; a grid column can. When the socials arrive this grows from
  * four to six and nothing about the layout changes.
  */
@@ -85,7 +85,7 @@ export function SiteFooter() {
       {/* 2 — the centrepiece. */}
       <Container className="py-20 text-center lg:py-28">
         <p className="mono-wide text-ink-icon tracking-[0.3em]">
-          One person · one phone · he answers it
+          One person · one phone · she answers it
         </p>
 
         {/*

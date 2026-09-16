@@ -5,7 +5,7 @@ import { Container, Section, SectionHead } from "@/design/Section";
 /**
  * Step 04 is the one that matters. "You see photos of the actual print before
  * you pay the balance" is the mechanic that answers the unspoken objection —
- * can I trust a man with printers in his house — and no bureau offers it,
+ * can I trust someone with printers in her house — and no bureau offers it,
  * because no bureau can.
  */
 export function Process() {

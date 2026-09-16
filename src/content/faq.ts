@@ -5,7 +5,7 @@ import type { FaqItem } from "./types";
  * converged from print-service FAQ pages and maker communities.
  *
  * Answers deliberately avoid inventing turnaround times or prices — those are
- * Kirk's to set, and they live in the pricing section once he has confirmed
+ * Kirk's to set, and they live in the pricing section once she has confirmed
  * them. An answer that says "ask me" is better than a number that is wrong.
  */
 export const faq = [
@@ -72,8 +72,8 @@ export const faq = [
 ] as const satisfies readonly FaqItem[];
 
 /**
- * Publishing what he will NOT print reads as expertise rather than limitation,
- * and it pre-filters the leads that would waste his evening.
+ * Publishing what she will NOT print reads as expertise rather than limitation,
+ * and it pre-filters the leads that would waste her evening.
  */
 export const willNotPrint = {
   headline: "What I don't take on",

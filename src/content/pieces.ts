@@ -1,7 +1,7 @@
 import { TBD, type Piece } from "./types";
 
 /**
- * Real pieces Kirk has printed. Alt text is carried over from his own site
+ * Real pieces Kirk has printed. Alt text is carried over from her own site
  * almost unchanged — it was unusually descriptive and did not need rewriting.
  *
  * Every spec is TBD until Kirk reads it off the project file. That is the
@@ -9,7 +9,7 @@ import { TBD, type Piece } from "./types";
  * measurable, so an invented layer count here would do more damage than a
  * blank one.
  *
- * `clientWork: false` marks a piece Kirk made for himself. It renders an amber
+ * `clientWork: false` marks a piece Kirk made for herself. It renders an amber
  * DEMONSTRATION chip so nothing on the page implies a commission that did not
  * happen.
  */

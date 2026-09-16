@@ -38,7 +38,7 @@ export default function QuotePage() {
               find the number is a self-inflicted wound.
             */}
             <div className="hairline mt-10 space-y-1 border-t pt-8">
-              <p className="mono-label mb-4">Or reach him directly</p>
+              <p className="mono-label mb-4">Or reach her directly</p>
               <a
                 href={telHref}
                 className="text-ink hover:text-alert flex items-center gap-3 py-2 text-lg font-medium transition-colors duration-250"

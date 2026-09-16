@@ -68,5 +68,5 @@ export function LocalTime() {
 
   // No aria-live: a polite region here would announce the time every minute,
   // forever, to anyone using a screen reader.
-  return <span>{time ? `${time} his time` : "Central time"}</span>;
+  return <span>{time ? `${time} her time` : "Central time"}</span>;
 }

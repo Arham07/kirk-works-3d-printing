@@ -111,7 +111,10 @@ export function ServicesIndex() {
                 </span>
               </summary>
 
-              <div className="page-gutter mx-auto max-w-[90rem] pb-12">
+              {/* pt matters: the summary's red hover rule sits on its bottom
+                  edge, so without it the panel's first line collides with the
+                  rule and the two read as one smeared element. */}
+              <div className="page-gutter mx-auto max-w-[90rem] pt-8 pb-14 md:pt-10">
                 <div className="grid gap-8 pl-0 md:grid-cols-[12rem_1fr_auto] md:gap-12 md:pl-18">
                   {/* The reference's duplicate second title. */}
                   {/* The braces are required: a bare // in JSX children is

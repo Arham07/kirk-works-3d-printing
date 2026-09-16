@@ -5,8 +5,8 @@ import type { Material } from "./types";
  * photography. These are published typical properties for FDM filaments, not
  * measurements of Kirk's specific spools — the copy frames them as typical.
  *
- * Which of these Kirk actually stocks is a question for him; the table should
- * only list what he can genuinely print today.
+ * Which of these Kirk actually stocks is a question for her; the table should
+ * only list what she can genuinely print today.
  */
 export const materials = [
   {
