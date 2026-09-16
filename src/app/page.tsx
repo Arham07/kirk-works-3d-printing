@@ -4,6 +4,10 @@ import { Capabilities } from "@/sections/Capabilities";
 import { Machines } from "@/sections/Machines";
 import { Materials } from "@/sections/Materials";
 import { Process } from "@/sections/Process";
+import { Pricing } from "@/sections/Pricing";
+import { Lessons } from "@/sections/Lessons";
+import { Faq } from "@/sections/Faq";
+import { QuoteCta } from "@/sections/QuoteCta";
 
 export default function HomePage() {
   return (
@@ -14,6 +18,10 @@ export default function HomePage() {
       <Machines />
       <Materials />
       <Process />
+      <Pricing />
+      <Lessons />
+      <Faq />
+      <QuoteCta />
     </>
   );
 }

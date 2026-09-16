@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { business, mailtoHref, smsHref, telHref } from "@/content/business";
 import { Button } from "@/design/Button";
 
@@ -13,18 +13,27 @@ import { Button } from "@/design/Button";
  * No path through this flow ends with a lead silently lost. That is the whole
  * point of the rebuild.
  */
-export function QuoteRecovery() {
-  const [message, setMessage] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
+/** localStorage is an external store, so read it through the sanctioned API
+ *  rather than setting state from an effect. The server snapshot is null,
+ *  which is what the prerendered HTML contains. */
+const subscribe = () => () => {};
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("kw3d:last-quote");
-      if (stored) setMessage(JSON.parse(stored).message ?? null);
-    } catch {
-      // Storage blocked. The direct contact routes below still work.
-    }
-  }, []);
+function readStoredMessage(): string | null {
+  try {
+    const stored = localStorage.getItem("kw3d:last-quote");
+    if (!stored) return null;
+    // A string snapshot compares by value, so returning it repeatedly is
+    // stable and will not loop.
+    return (JSON.parse(stored).message as string | undefined) ?? null;
+  } catch {
+    // Private mode or blocked storage. The direct contact routes still work.
+    return null;
+  }
+}
+
+export function QuoteRecovery() {
+  const message = useSyncExternalStore(subscribe, readStoredMessage, () => null);
+  const [copied, setCopied] = useState(false);
 
   async function copy() {
     if (!message) return;

@@ -1,7 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { submitQuote, validate, type QuotePayload } from "@/lib/submit";
 import { Button } from "@/design/Button";
 import { ArrowRightIcon } from "@/design/icons";
@@ -45,14 +44,17 @@ const EMPTY: QuotePayload = {
 };
 
 export function QuoteForm() {
-  const router = useRouter();
   const [values, setValues] = useState<QuotePayload>(EMPTY);
   const [errors, setErrors] = useState<Partial<Record<keyof QuotePayload, string>>>({});
   const [touched, setTouched] = useState<Partial<Record<keyof QuotePayload, boolean>>>({});
   const [pending, setPending] = useState(false);
   const descriptionRef = useRef<HTMLTextAreaElement>(null);
-  // Rejects bots that submit instantly. Rendered at mount, checked on submit.
-  const mountedAt = useRef(Date.now());
+  // Rejects bots that submit instantly. Stamped in an effect rather than
+  // during render, which would be an impure call.
+  const mountedAt = useRef(0);
+  useEffect(() => {
+    mountedAt.current = Date.now();
+  }, []);
 
   const set = (field: keyof QuotePayload, value: string) =>
     setValues((previous) => ({ ...previous, [field]: value }));
@@ -99,7 +101,11 @@ export function QuoteForm() {
     setPending(true);
     const result = await submitQuote(values);
     if (result.ok) {
-      router.push("/quote/thanks/");
+      // A full document navigation, not router.push. The site uses MPA
+      // navigation throughout so every page is a fresh document and the
+      // motion layer re-initialises cleanly — a client transition would leave
+      // ScrollTriggers pointing at unmounted DOM.
+      window.location.assign("/quote/thanks/");
     } else {
       setErrors(result.errors);
       setPending(false);
