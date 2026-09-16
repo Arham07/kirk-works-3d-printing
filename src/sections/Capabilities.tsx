@@ -10,10 +10,10 @@ import { ArrowRightIcon } from "@/design/icons";
  */
 export function Capabilities() {
   return (
-    <Section label="What can be made" id="work">
+    <Section label="What can be made" id="capabilities">
       <Container>
         <SectionHead
-          number="02"
+          number="03"
           eyebrow="What can be made"
           headline="Ideas become something you can hold."
           deck="From one meaningful custom piece to larger corporate projects — combining modern equipment with genuine, down-home service."

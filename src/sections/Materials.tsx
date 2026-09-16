@@ -15,7 +15,7 @@ export function Materials() {
     <Section label="Materials" id="materials" surface="raised">
       <Container>
         <SectionHead
-          number="04"
+          number="05"
           eyebrow="Materials"
           headline="Which plastic, and why it matters."
           deck="You don't need to pick one. Tell me where the piece is going to live and I'll tell you what it should be made of."

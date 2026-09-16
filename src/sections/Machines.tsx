@@ -26,7 +26,7 @@ export function Machines() {
     <Section label="Machines" id="machines">
       <Container>
         <SectionHead
-          number="03"
+          number="04"
           eyebrow="The equipment"
           headline="Three machines. One person running them."
           deck="Every job is matched to the printer that suits it — which is a decision, not a default."
