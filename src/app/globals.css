@@ -82,6 +82,16 @@
   --text-display-2--letter-spacing: -0.04em;
   --text-display-2--font-weight: 700;
 
+  /*
+    The services-index row title. Capped at 56px on purpose: a row title must
+    never compete with the display-1 word sitting above it, and it needs clear
+    air above text-h3's 32px ceiling.
+  */
+  --text-display-3: clamp(2rem, 4.4vw, 3.5rem);
+  --text-display-3--line-height: 0.95;
+  --text-display-3--letter-spacing: -0.035em;
+  --text-display-3--font-weight: 700;
+
   --text-h3: clamp(1.5rem, 3vw, 2rem);
   --text-h3--line-height: 1.2;
   --text-h3--letter-spacing: -0.02em;
@@ -239,6 +249,145 @@
   }
 }
 
+/*
+  Wider-tracked mono, for labels that need to read as a device rather than as
+  information: field labels, bracketed channel links, the hinge line in the
+  contact headline. A separate utility rather than `mono-label tracking-[...]`
+  — in Tailwind v4 two utilities setting the same property are resolved by
+  source order, not by the order they appear in the class attribute.
+*/
+@utility mono-wide {
+  font-family: var(--font-mono);
+  font-size: var(--text-label);
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+}
+
+/*
+  Animated underline. background-size on a gradient layer, NOT an absolutely
+  positioned ::after — a pseudo-element lays out against the first fragment of
+  a wrapped inline and visibly breaks the moment a link wraps to two lines.
+  box-decoration-break keeps it correct across those fragments.
+
+  The direction swap is the trick: hover re-anchors left and grows 0→100%,
+  leave re-anchors right and shrinks, so the rule retreats the way it came.
+  Only background-size transitions, so the position change is instantaneous —
+  and invisible, because at that moment the layer is either zero-width or
+  full-width, where left- and right-anchored are identical.
+*/
+@utility link-rule {
+  background-image: linear-gradient(currentcolor, currentcolor);
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  background-position: 100% 100%;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  padding-block-end: 0.12em;
+  transition: background-size 420ms var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+    background-position: 0% 100%;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 1ms;
+  }
+}
+
+/* The footer centrepiece: always ruled, and the rule wipes red on hover. */
+@utility contact-rule {
+  background-image: linear-gradient(var(--color-alert), var(--color-alert)),
+    linear-gradient(currentcolor, currentcolor);
+  background-repeat: no-repeat, no-repeat;
+  background-size: 0% 2px, 100% 2px;
+  background-position: 0% 100%, 0% 100%;
+  padding-block-end: 0.1em;
+  transition: background-size 500ms var(--ease-out);
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 2px, 100% 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition-duration: 1ms;
+  }
+}
+
+/*
+  Bottom clearance for the fixed mobile call bar. Keyed to (pointer: coarse) —
+  the same media feature CallBar itself uses — rather than a width breakpoint,
+  which is wrong on a 900px touch tablet where the bar is showing but a
+  md: breakpoint has already fired.
+*/
+@utility clears-callbar {
+  padding-block-end: 4.5rem;
+  @media (pointer: coarse) {
+    padding-block-end: calc(4.5rem + 3.5rem + env(safe-area-inset-bottom));
+  }
+}
+
+/*
+  Boxless field rules. These values are MEASURED against #0C0C0B — do not
+  "tidy" them to .hairline: color-mix(currentcolor 16%) resolves to ~1.4:1
+  here and fails WCAG 1.4.11 outright. --color-line is 1.91:1 and
+  --color-line-strong is 2.68:1; both also fail. --color-ink-disabled is the
+  lightest existing token clearing 3:1 without reading as a filled state.
+  It is a RULE colour only — as text it is 3.77:1 and fails AA.
+*/
+@utility field-underline {
+  --field-rule: var(--color-ink-disabled); /* 3.77:1 */
+  border-block-end: 1px solid var(--field-rule);
+  transition: border-color 250ms var(--ease-out);
+
+  &:hover {
+    --field-rule: var(--color-ink-icon); /* 5.25:1 */
+  }
+  &[data-filled] {
+    --field-rule: var(--color-ink-muted); /* 8.14:1 */
+  }
+  &[data-invalid] {
+    --field-rule: var(--color-alert-ink); /* 5.89:1 */
+  }
+}
+
+/*
+  The textarea as ruled engineering paper — the site's technical-drawing
+  language applied to the one control that needs interior structure.
+
+  line-height MUST be a fixed length, never a unitless multiplier, or the
+  gradient period and the text leading desynchronise across breakpoints.
+  background-attachment: local is what keeps the rules moving with the text;
+  without it they stay pinned and the alignment drifts the moment content
+  exceeds the visible height. That is how this effect is usually botched.
+*/
+@utility field-lines {
+  line-height: 2rem;
+  padding-block: 0.25rem 0.75rem;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent calc(2rem - 1px),
+    var(--hairline-faint) calc(2rem - 1px),
+    var(--hairline-faint) 2rem
+  );
+  background-attachment: local;
+  background-position: 0 0.25rem;
+  resize: vertical;
+
+  @supports (field-sizing: content) {
+    field-sizing: content;
+    min-height: 10rem;
+    max-height: 22rem;
+    resize: none;
+  }
+}
+
 @utility mono-label {
   font-family: var(--font-mono);
   font-size: var(--text-label);
@@ -284,5 +433,74 @@
       reveal ran — the element would fade in and then sit permanently low.
     */
     transform: translateY(1.5rem);
+  }
+
+  /*
+    B — masked line rise. Only ever applied to elements whose line count is
+    AUTHORED, never computed, which is why no text splitting, no fonts.ready
+    dependency and no forced reflow are needed anywhere on this site.
+  */
+  .js[data-motion="on"] [data-rise-mask] > [data-rise] {
+    transform: translateY(105%);
+  }
+
+  /* C — section rules draw in from the left. */
+  .js[data-motion="on"] [data-rule] {
+    transform: scaleX(0);
+    transform-origin: left center;
+  }
+
+  /*
+    D — the print-head wipe. The photograph reveals bottom-to-top, the way a
+    print grows off the build plate.
+  */
+  .js[data-motion="on"] [data-plate] {
+    clip-path: inset(100% 0 0 0);
+  }
+}
+
+/* Masks for B. Outside the media query: the wrapper must clip regardless, or
+   a rising line would be visible above its own container mid-tween. */
+[data-rise-mask] {
+  overflow: clip;
+  /* clip rather than hidden so the mask never creates a scroll container. */
+}
+
+/* ==========================================================================
+   FORM PLUMBING
+   Both blocks are required for a boxless form and both fail silently if
+   dropped — nothing in review will catch them.
+   ========================================================================== */
+
+/*
+  Chrome paints autofilled inputs with a SOLID background we cannot override
+  directly; the inset shadow is the only way to mask it, so it must match the
+  section background token exactly. If the form ever moves off surface-0, this
+  moves with it or a grey block appears behind every autofilled value.
+*/
+.field-underline input:-webkit-autofill,
+.field-underline input:-webkit-autofill:hover,
+.field-underline input:-webkit-autofill:focus,
+.field-underline textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-ink);
+  -webkit-box-shadow: 0 0 0 1000px var(--color-surface-0) inset;
+  caret-color: var(--color-alert);
+  /* The transition delay is the standard trick to stop the yellow flash. */
+  transition: background-color 9999s ease-out 0s;
+}
+
+/*
+  Forced-colors strips backgrounds, which deletes the focus BAR entirely —
+  removing the focus indicator for exactly the users who most need it.
+  Put a real outline back for them.
+*/
+@media (forced-colors: active) {
+  .field-underline input:focus-visible,
+  .field-underline textarea:focus-visible {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+  [aria-pressed="true"] {
+    outline: 2px solid Highlight;
   }
 }

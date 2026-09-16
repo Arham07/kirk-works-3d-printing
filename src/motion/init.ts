@@ -1,4 +1,5 @@
 import gsap from "gsap";
+import { CustomEase } from "gsap/CustomEase";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import Lenis from "lenis";
 
@@ -12,12 +13,21 @@ import Lenis from "lenis";
  * and readable before a single tween runs; this layer only adds motion on top.
  */
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, CustomEase);
 
 let lenis: Lenis | null = null;
 let cleanup: (() => void) | null = null;
 
-const EASE = "power3.out";
+/**
+ * One curve for the whole site, matching --ease-out in globals.css exactly.
+ *
+ * Previously JS reveals decelerated on power3.out while every CSS transition
+ * used cubic-bezier(.22,1,.36,1) — close enough to look like a mistake rather
+ * than a choice. A card that revealed and then responded to hover was moving
+ * in two different languages.
+ */
+CustomEase.create("kw", "0.22, 1, 0.36, 1");
+const EASE = "kw";
 
 function initLenis() {
   // Fine pointers only. Lenis is deliberately inert on touch — phones keep
@@ -75,6 +85,68 @@ function initReveals() {
   });
 }
 
+/**
+ * B — masked line rise. Used in exactly three places: the SERVICES word, the
+ * contact headline stack, and the footer phone number. Each is an element
+ * whose line count is AUTHORED in the markup, never computed, which is why
+ * this needs no text splitting and no fonts.ready dependency.
+ */
+function initRises() {
+  ScrollTrigger.batch("[data-rise-mask] > [data-rise]", {
+    start: "top 90%",
+    once: true,
+    batchMax: 4,
+    interval: 0.06,
+    onEnter: (elements) => {
+      // fromTo, NOT to. getComputedStyle resolves the CSS translateY(105%) to
+      // a pixel matrix, which GSAP reads as `y` in px; tweening yPercent on
+      // top of that would land the line 105% below where it belongs.
+      gsap.fromTo(
+        elements,
+        { yPercent: 105 },
+        { yPercent: 0, duration: 0.9, stagger: 0.09, ease: EASE, overwrite: true },
+      );
+    },
+  });
+}
+
+/** C — section rules draw in from the left as they enter. */
+function initRules() {
+  gsap.utils.toArray<HTMLElement>("[data-rule]").forEach((rule) => {
+    gsap.to(rule, {
+      scaleX: 1,
+      duration: 0.9,
+      ease: EASE,
+      scrollTrigger: { trigger: rule, start: "top 90%", once: true },
+    });
+  });
+}
+
+/**
+ * D — the print-head wipe, and the one gesture that is specific to this
+ * business: the photograph reveals bottom-to-top the way a print grows off
+ * the build plate, with a red line riding the leading edge.
+ *
+ * power2.inOut deliberately, not the house curve — a print head moves at
+ * near-constant speed, and an ease-out makes it look like a slide.
+ */
+function initPlates() {
+  gsap.utils.toArray<HTMLElement>("[data-plate]").forEach((plate) => {
+    gsap.to(plate, {
+      clipPath: "inset(0% 0 0 0)",
+      duration: 1,
+      ease: "power2.inOut",
+      scrollTrigger: { trigger: plate, start: "top 80%", once: true },
+      // clip-path clips the element's own focus ring, so it must be removed
+      // once the wipe is done. clearProps is WRONG here: it would strip the
+      // inline style and revert to the CSS pre-state, hiding it forever.
+      onComplete: () => {
+        plate.style.clipPath = "none";
+      },
+    });
+  });
+}
+
 function initCounters() {
   // Scrub a proxy object and snap, rather than tweening textContent directly —
   // tweening a string property produces fractional garbage mid-flight.
@@ -127,6 +199,9 @@ export function initMotion() {
   mm.add("(prefers-reduced-motion: no-preference)", () => {
     const stopLenis = initLenis();
     initReveals();
+    initRises();
+    initRules();
+    initPlates();
     initCounters();
     initDrawings();
 
@@ -149,6 +224,9 @@ export function initMotion() {
   // pre-state is snapped to its final state.
   mm.add("(prefers-reduced-motion: reduce)", () => {
     gsap.set("[data-reveal]", { opacity: 1, y: 0, clearProps: "all" });
+    gsap.set("[data-rise]", { yPercent: 0, clearProps: "all" });
+    gsap.set("[data-rule]", { scaleX: 1, clearProps: "all" });
+    gsap.set("[data-plate]", { clipPath: "none" });
     document.documentElement.dataset.motion = "off";
   });
 
