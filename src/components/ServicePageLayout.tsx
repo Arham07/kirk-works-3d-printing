@@ -1,11 +1,12 @@
 import { business, smsHref, telHref } from "@/content/business";
 import { pieces } from "@/content/pieces";
 import type { ServicePage } from "@/content/services/types";
+import { FaqList } from "@/components/FaqList";
 import { PhotoCard } from "@/components/media/Photo";
 import { LinkButton } from "@/design/Button";
 import { Container, Section } from "@/design/Section";
 import { JsonLd } from "@/lib/schema";
-import { ArrowRightIcon, ChevronDownIcon, MessageIcon, PhoneIcon } from "@/design/icons";
+import { ArrowRightIcon, MessageIcon, PhoneIcon } from "@/design/icons";
 
 /**
  * One layout, four routes. Every string comes from the service's own content
@@ -158,17 +159,9 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           <h2 className="font-display text-display-2 text-ink uppercase" data-reveal>
             Questions about this
           </h2>
-          <div className="mt-10 max-w-3xl" data-reveal>
-            {service.faq.map((item) => (
-              <details key={item.question} name="service-faq" className="hairline group border-t">
-                <summary className="text-ink flex cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg marker:hidden">
-                  {item.question}
-                  <ChevronDownIcon className="text-ink-icon shrink-0 transition-transform duration-250 group-open:rotate-180" />
-                </summary>
-                <p className="text-ink-muted pr-10 pb-6 text-pretty">{item.answer}</p>
-              </details>
-            ))}
-          </div>
+          {/* Same component as the home page, single column: these routes
+              carry four questions, and two columns of two looks accidental. */}
+          <FaqList items={service.faq} columns={1} className="mt-10 max-w-3xl" />
 
           <div className="hairline mt-14 flex flex-wrap items-center gap-4 border-t pt-10">
             <LinkButton href="/quote/">

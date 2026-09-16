@@ -506,6 +506,36 @@
 }
 
 /* ==========================================================================
+   DISCLOSURE ANIMATION
+
+   Native <details> keeps keyboard operation, Escape, find-in-page and
+   zero JavaScript. ::details-content plus interpolate-size gives it the
+   smooth open that normally costs a JS accordion and a measured height.
+
+   Gated behind @supports on purpose: where it is unsupported the panel simply
+   snaps open, which is correct. A guessed max-height fallback would either
+   clip the tallest answer or ease through hundreds of pixels of nothing.
+   ========================================================================== */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .disclosure::details-content {
+      block-size: 0;
+      overflow: hidden;
+      transition:
+        block-size 300ms var(--ease-out),
+        content-visibility 300ms allow-discrete;
+    }
+    .disclosure[open]::details-content {
+      block-size: auto;
+    }
+  }
+}
+
+/* ==========================================================================
    FORM PLUMBING
    Both blocks are required for a boxless form and both fail silently if
    dropped — nothing in review will catch them.
