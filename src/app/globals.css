@@ -506,6 +506,242 @@
 }
 
 /* ==========================================================================
+   E — THE MASTHEAD
+
+   The hero wordmark is live text, not an image and not per-letter spans:
+   splitting a condensed face at 250px into inline-blocks destroys the kerning
+   that is the only reason to use it, and it breaks find-in-page.
+
+   It is sized against the CONTAINER, not the viewport, so it spans the content
+   column exactly — inside the page gutter and under the 90rem cap. The vw line
+   above it is the fallback for engines without container query units; it is
+   correct at common widths and only drifts once the 90rem cap engages.
+
+   The divisor is the measured width of the word in em at this weight and
+   tracking, plus the 0.045em of negative tracking that trails the last glyph.
+   Re-measure it if the display face, its weight or --text-display-1's
+   letter-spacing ever changes.
+   ========================================================================== */
+[data-wordmark] {
+  font-size: 18.7vw;
+  font-size: calc(100cqw / 4.87);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+}
+
+/* The hollow WORKS echoes the printed card, where it is the only red. A fixed
+   2px stroke reads as a hairline at 250px, so it scales past that size. */
+[data-wordmark] [data-outline] {
+  -webkit-text-stroke-width: max(2px, 0.012em);
+}
+
+@keyframes kw-wordmark-in {
+  from {
+    transform: translateY(0.18em) scale(1.04);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes kw-bar-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes kw-settle {
+  from {
+    transform: translateY(0.25em);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes kw-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(0.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*
+    Transform only, and only 4% of overshoot: 2% either side of centre stays
+    inside the 16px gutter at the narrowest breakpoint, so the settle can never
+    push a scrollbar. The un-animated state is the identity state, which is
+    what every other visitor gets.
+  */
+  .js[data-motion="on"] [data-wordmark] {
+    transform-origin: 50% 100%;
+    animation: kw-wordmark-in 900ms var(--ease-out) both;
+  }
+
+  .js[data-motion="on"] [data-bar] {
+    transform-origin: left center;
+    animation: kw-bar-in 900ms var(--ease-out) 150ms both;
+  }
+
+  /* The H1 is an LCP candidate, so it moves but never fades. */
+  .js[data-motion="on"] [data-hero-h1] {
+    animation: kw-settle 800ms var(--ease-out) 250ms both;
+  }
+
+  /* Supporting blocks only — never the wordmark or the H1. */
+  .js[data-motion="on"] [data-hero-in] {
+    animation: kw-fade-up 700ms var(--ease-out) var(--d, 300ms) both;
+  }
+}
+
+/* ==========================================================================
+   F — THE WORK DECK
+
+   Selected work is one DOM tree with two layouts. Everywhere except a wide
+   viewport with motion enabled it is an ordinary list: a card and its details,
+   six times. Under the gate below it becomes a pinned deck — cards stacked in
+   one slot, rising as you scroll, with the index and the details cross-fading
+   beside them.
+
+   The gate is EXACTLY the condition under which StackScrubber writes
+   --progress (lg, motion on, reduced motion off). If those ever disagree the
+   section either pins with nothing driving it or scrubs a static list, so the
+   rail height lives here rather than as a utility in JSX.
+
+   All of it — layout and maths — is unlayered author CSS on purpose. It has to
+   beat sm:grid-cols-2 and hidden from the utilities layer regardless of source
+   order, and clamp() plateaus are not readable as class names.
+   ========================================================================== */
+@media (width >= 64rem) and (prefers-reduced-motion: no-preference) {
+  .js[data-motion="on"] {
+    /* 100vh of stage plus five transitions of 75vh. SIX cards is FIVE
+       transitions — counting six leaves a dead quarter at the end. */
+    [data-deck-rail] {
+      position: relative;
+      height: 475vh;
+    }
+
+    [data-deck] {
+      position: sticky;
+      top: 6rem;
+      height: calc(100vh - 8rem);
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr 1.15fr;
+      grid-template-rows: auto auto;
+      column-gap: 3rem;
+      row-gap: 2rem;
+      align-content: center;
+      /* Fractional card index, 0 → N-1. Every expression below reads this
+         rather than raw progress, which is what makes card 0 seated at the
+         start and card N-1 parked at the end without a special case. */
+      --x: calc(var(--progress, 0) * (var(--n) - 1));
+    }
+
+    [data-deck-lead] {
+      grid-column: 1;
+      grid-row: 1 / 3;
+      align-self: center;
+    }
+
+    [data-deck-index] {
+      display: block;
+      grid-column: 2;
+      grid-row: 1;
+      align-self: end;
+    }
+
+    [data-deck-detail] {
+      grid-column: 2;
+      grid-row: 2;
+      align-self: start;
+      opacity: var(--on);
+    }
+
+    /* The highlighted name in the index IS the visible title here, so the
+       real heading goes to screen readers only rather than being duplicated
+       on screen. It stays a visible h3 in list mode. */
+    [data-deck-detail] > [data-deck-title] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      margin: 0;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    /*
+      Cards share one grid cell rather than being absolutely positioned, so the
+      cell still has the height of a card and the stage does not collapse.
+      No z-index: they are siblings with z-index auto, so they paint in DOM
+      order and the newest card is already on top.
+    */
+    [data-deck-card] {
+      grid-column: 3;
+      grid-row: 1 / 3;
+      align-self: center;
+      justify-self: end;
+      width: 100%;
+      /* A 3:4 card must fit the stage on a short laptop, where the column
+         width is not the binding constraint. */
+      max-width: calc((100vh - 14rem) * 0.75);
+      /* Entry: this card rises through its own window, x ∈ [i-1, i]. */
+      --t: clamp(0, var(--x) - var(--i) + 1, 1);
+      /* Exit is the NEXT card's entry, so the two are always in step. */
+      --u: clamp(0, var(--x) - var(--i), 1);
+      /*
+        100vh, not a percentage: the stage top is at least 6rem down, so a
+        whole viewport height is provably off screen, where 110% of a 590px
+        card still leaves it visible on a 900px display. The exit is a 6%
+        drift and a late fade rather than a full slide — a card leaving
+        completely would pass under the translucent fixed header.
+      */
+      transform: translate3d(0, calc((1 - var(--t)) * 100vh - var(--u) * 6%), 0);
+      opacity: clamp(0, 4 - 4 * var(--u), 1);
+      will-change: transform;
+    }
+
+    /*
+      Item i is solid while card i owns the slot and folds away at the halfway
+      point of each transition, where item i+1 starts. The two windows MEET at
+      zero rather than overlapping — six details blocks share one grid cell, so
+      any overlap at all would print two paragraphs on top of each other.
+      --k sets how abrupt the handover is; first and last resolve to 1 at the
+      ends of the rail on their own.
+    */
+    [data-deck-detail],
+    [data-deck-name],
+    [data-deck-num] {
+      --on: min(
+        clamp(0, (var(--x) - var(--i) + 0.5) * var(--k, 8), 1),
+        clamp(0, (var(--i) + 0.5 - var(--x)) * var(--k, 8), 1)
+      );
+    }
+
+    /* A counter flips. Anything slower reads as two digits smeared together. */
+    [data-deck-num] {
+      --k: 20;
+      opacity: var(--on);
+    }
+
+    /* 0.6 rather than 0: the inactive names must stay legible, and ink at 60%
+       is still above 4.5:1 in both themes. */
+    [data-deck-name] {
+      opacity: calc(0.6 + 0.4 * var(--on));
+    }
+  }
+}
+
+/* ==========================================================================
    DISCLOSURE ANIMATION
 
    Native <details> keeps keyboard operation, Escape, find-in-page and

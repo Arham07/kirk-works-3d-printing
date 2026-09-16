@@ -84,11 +84,18 @@ Save-Data or 2G visitors.
 Sections stay Server Components and opt in by attribute — `data-reveal`,
 `data-plate`, `data-rule` — so nothing in the page tree imports GSAP.
 
+The two scroll chapters — the HueForge stack and the Selected Work deck — do
+not use GSAP at all. `StackScrubber` writes one `--progress` custom property
+onto a sticky rail and CSS does the rest, so the pinned deck is six cards and
+an index driven by arithmetic in `globals.css` rather than by per-element
+JavaScript. Both sections are the same DOM in their unpinned form.
+
 Two hard rules:
 
 - **Nothing on the LCP path animates.** Chrome computes LCP from the painted,
   unclipped intersection, so a fade or a clip mask disqualifies an element
-  while `transform` does not. The hero and `/quote` headlines paint finished.
+  while `transform` does not. The LCP element on `/` is the hero wordmark; it
+  and the headlines paint finished and only ever move.
 - **Every animated state has a valid finished state on the other side.** With
   JavaScript off, reduced motion on, or the chunk failing to load, the page is
   complete. An inline head script flips `data-motion="off"` after 2.5s if the

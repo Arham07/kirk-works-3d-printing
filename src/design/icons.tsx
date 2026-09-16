@@ -81,6 +81,12 @@ export const ArrowUpIcon = (p: SVGProps<SVGSVGElement>) => (
   </Glyph>
 );
 
+export const ArrowDownIcon = (p: SVGProps<SVGSVGElement>) => (
+  <Glyph {...p}>
+    <path d="M12 3.5v17M6 14l6 6.5 6-6.5" />
+  </Glyph>
+);
+
 /** Only ever used on links that leave the site — it means "external". */
 export const ArrowUpRightIcon = (p: SVGProps<SVGSVGElement>) => (
   <Glyph {...p}>

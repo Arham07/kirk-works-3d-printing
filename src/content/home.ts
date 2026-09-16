@@ -11,6 +11,8 @@ export const hero = {
   deck: "Kirk Edmunds. Three printers, one person, and the phone number below is mine.",
   primaryCta: "Request a quote",
   secondaryCta: "Text Kirk a photo",
+  /** Bottom-right of the hero split, desktop only — the scroll affordance. */
+  scrollHint: "Scroll to explore",
 } as const;
 
 export const thesis = {
