@@ -1,56 +1,57 @@
-import { business, smsHref, telHref } from "@/content/business";
 import { quoteSection } from "@/content/home";
-import { LinkButton } from "@/design/Button";
-import { Container, Section } from "@/design/Section";
-import { ArrowRightIcon, MessageIcon, PhoneIcon } from "@/design/icons";
+import { ContactHeadline, DirectRoutes } from "@/design/ContactHead";
+import { Container } from "@/design/Section";
+import { ArrowRightIcon } from "@/design/icons";
 
 /**
- * The page's closing conversion block. Plain anchors — tel:, sms: and a link
- * to the quote page — so the primary path works with zero JavaScript.
+ * The page's closing conversion block, and the second of the page's two
+ * visual peaks — the most vertical air anywhere on the site by a factor of
+ * two, which is what makes it read as an arrival rather than another section.
+ *
+ * It bypasses <Section> the way Hero does: `cn` is bare clsx, so a py- value
+ * passed through className would sit alongside Section's own and let source
+ * order decide the winner.
+ *
+ * It stays a link rather than embedding the first field. Everything on this
+ * page below MotionRoot is a Server Component, and pulling the form's four
+ * useStates into a section most visitors never reach is the wrong trade on a
+ * site built for someone on cellular in a parking lot. A decoy input that
+ * discards what you typed would also be a small lie.
  */
 export function QuoteCta() {
   return (
-    <Section label="Request a quote" id="quote" surface="raised">
+    <section
+      id="quote"
+      aria-label="Request a quote"
+      className="bg-surface-1 py-36 lg:py-60"
+    >
       <Container>
-        <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:gap-20">
-          <div data-reveal>
-            <p className="mono-label">{quoteSection.eyebrow}</p>
-            <h2 className="font-display text-display-2 text-ink mt-5 uppercase text-balance">
-              {quoteSection.headline[0]}
-              <br />
-              <span className="text-outline-alert">{quoteSection.headline[1]}</span>
-            </h2>
-            <p className="text-deck text-ink-muted mt-7 max-w-xl text-pretty">
-              {quoteSection.body}
-            </p>
-            <p className="border-alert text-ink mt-7 border-l-2 pl-5 text-pretty">
-              {quoteSection.photoFirst}
-            </p>
-          </div>
+        <p className="mono-wide text-ink-icon text-center">{quoteSection.eyebrow}</p>
 
-          <div data-reveal className="lg:pt-16">
-            <div className="flex flex-wrap gap-3">
-              <LinkButton href="/quote/">
-                Request a quote
-                <ArrowRightIcon width={18} height={18} />
-              </LinkButton>
-              <LinkButton href={smsHref("Hi Kirk, I'd like a quote for: ")} tone="outline">
-                <MessageIcon width={18} height={18} />
-                Text a photo
-              </LinkButton>
-            </div>
+        <ContactHeadline className="mt-8" />
 
-            <a
-              href={telHref}
-              className="hairline text-ink hover:text-alert mt-9 flex items-center gap-3 border-t pt-8 text-2xl font-medium transition-colors duration-250"
-            >
-              <PhoneIcon width={20} height={20} />
-              {business.phoneDisplay}
-            </a>
-            <p className="mono-label mt-4">{business.locality} · Ships nationwide</p>
-          </div>
+        <p className="text-deck text-ink-muted mx-auto mt-10 max-w-2xl text-center text-pretty">
+          {quoteSection.body}
+        </p>
+
+        {/* One ruled link in the form's own language, so the click feels like
+            the page opened rather than navigated somewhere else. */}
+        <div className="mx-auto mt-16 max-w-2xl" data-reveal>
+          <a href="/quote/" className="group hairline block border-t pt-6">
+            <span className="mono-wide text-ink-icon">Start here</span>
+            <span className="text-ink mt-3 flex items-center justify-between gap-6 text-h3">
+              Tell Kirk what you have in mind
+              <ArrowRightIcon
+                width={22}
+                height={22}
+                className="shrink-0 transition-transform duration-250 motion-safe:group-hover:translate-x-1"
+              />
+            </span>
+          </a>
         </div>
+
+        <DirectRoutes className="mx-auto mt-16 max-w-4xl" />
       </Container>
-    </Section>
+    </section>
   );
 }

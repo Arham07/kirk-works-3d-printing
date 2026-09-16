@@ -124,8 +124,12 @@ export function QuoteForm() {
       </div>
 
       <fieldset className="border-0 p-0">
-        <legend className="mono-label text-ink-icon mb-4">
-          01 — What are we making?
+        <legend className="mb-6 w-full p-0">
+          <span className="flex items-center gap-4">
+            <span className="mono-wide text-alert-ink">01</span>
+            <span className="mono-wide text-ink">What are we making?</span>
+            <span aria-hidden className="hairline h-px flex-1 border-t" />
+          </span>
         </legend>
         {/*
           Nothing is preselected. The old site's <select> defaulted every
@@ -165,8 +169,10 @@ export function QuoteForm() {
       </fieldset>
 
       <div className="mt-12">
-        <label htmlFor="description" className="mono-label text-ink-icon block">
-          02 — Tell Kirk about it
+        <label htmlFor="description" className="mb-6 flex items-center gap-4">
+          <span className="mono-wide text-alert-ink">02</span>
+          <span className="mono-wide text-ink">Tell Kirk about it</span>
+          <span aria-hidden className="hairline h-px flex-1 border-t" />
         </label>
         <p className="text-ink-muted mt-2 text-sm">
           Two sentences is plenty — she&rsquo;ll ask the rest.
@@ -185,36 +191,58 @@ export function QuoteForm() {
           ))}
         </div>
 
-        <textarea
-          id="description"
-          ref={descriptionRef}
-          name="description"
-          rows={6}
-          value={values.description}
-          onChange={(e) => set("description", e.target.value)}
-          onBlur={() => blur("description")}
-          aria-invalid={fieldError("description") ? "true" : undefined}
-          aria-describedby={fieldError("description") ? "description-error" : undefined}
-          className="hairline bg-surface-2 text-ink focus:border-line-strong mt-4 w-full rounded-control border p-4 text-base outline-none"
-        />
-        {fieldError("description") && (
-          <p id="description-error" className="text-alert-ink mt-2 text-sm">
-            {errors.description}
-          </p>
-        )}
-        <p className="text-ink-icon mt-3 text-sm">
+        {/* Ruled like engineering paper: the one control that needs interior
+            structure gets it, in the site's own drawing language. Single-line
+            fields get one rule; this gets many. */}
+        <div
+          className="field-underline group relative mt-5"
+          data-filled={values.description ? "" : undefined}
+          data-invalid={fieldError("description") ? "" : undefined}
+        >
+          <textarea
+            id="description"
+            ref={descriptionRef}
+            name="description"
+            rows={6}
+            value={values.description}
+            onChange={(e) => set("description", e.target.value)}
+            onBlur={() => blur("description")}
+            aria-invalid={fieldError("description") ? "true" : undefined}
+            aria-describedby="description-error"
+            className="field-lines text-ink caret-alert w-full bg-transparent text-base outline-none"
+          />
+          <span
+            aria-hidden
+            className="bg-ink absolute inset-x-0 -bottom-px h-0.5 origin-left scale-x-0 transition-transform duration-250 ease-out group-has-[:focus-visible]:scale-x-100 motion-reduce:transition-none"
+          />
+        </div>
+        <p
+          id="description-error"
+          className={
+            "text-alert-ink mt-2 min-h-6 text-sm transition-opacity duration-200 " +
+            (fieldError("description") ? "opacity-100" : "opacity-0")
+          }
+        >
+          {errors.description}
+        </p>
+        <p className="text-ink-icon text-sm">
           Got a photo? You can attach it in the next step, when your messaging
           app opens. No 3D file needed.
         </p>
       </div>
 
       <div className="mt-12">
-        <p className="mono-label text-ink-icon">03 — How should she reach you?</p>
+        <p className="mb-6 flex items-center gap-4">
+          <span className="mono-wide text-alert-ink">03</span>
+          <span className="mono-wide text-ink">How should she reach you?</span>
+          <span aria-hidden className="hairline h-px flex-1 border-t" />
+        </p>
 
-        <div className="mt-4 grid gap-5 sm:grid-cols-2">
+        <div className="grid gap-x-10 sm:grid-cols-2">
           <Field
             id="name"
             label="Name"
+            qualifier="required"
             value={values.name}
             onChange={(v) => set("name", v)}
             onBlur={() => blur("name")}
@@ -225,7 +253,7 @@ export function QuoteForm() {
           <Field
             id="phone"
             label="Phone"
-            hint="Optional if you give an email"
+            qualifier="or email"
             type="tel"
             inputMode="tel"
             value={values.phone}
@@ -237,11 +265,11 @@ export function QuoteForm() {
           />
         </div>
 
-        <div className="mt-5">
+        <div>
           <Field
             id="email"
             label="Email"
-            hint="Optional if you give a phone number"
+            qualifier="or phone"
             type="email"
             inputMode="email"
             value={values.email}
@@ -255,7 +283,12 @@ export function QuoteForm() {
         </div>
       </div>
 
-      <Button type="submit" disabled={pending} className="mt-10 w-full sm:w-auto">
+      <Button
+        type="submit"
+        shape="square"
+        disabled={pending}
+        className="mt-10 min-h-14 w-full sm:w-auto sm:px-10"
+      >
         {pending ? "Opening…" : "Send my quote request"}
         <ArrowRightIcon width={18} height={18} />
       </Button>
@@ -268,10 +301,24 @@ export function QuoteForm() {
   );
 }
 
+/**
+ * A boxless field: a persistent label over a full-width rule.
+ *
+ * The documented failure of boxless forms is placeholder-as-label, not the
+ * absence of a border. Labels here are always visible, above the rule,
+ * htmlFor-linked, and never move.
+ *
+ * This also fixes a measured contrast failure in the boxed version it
+ * replaces. Every input carried `outline-none`, which killed the global
+ * :focus-visible ring, and the replacement — focus:border-line-strong, or
+ * #57574E on #1B1B19 — is 2.36:1. That fails WCAG 1.4.11 and 2.4.11 on the
+ * single most important interaction on the site. Rest state here is 3.77:1
+ * and focus is a 17.3:1 bar.
+ */
 function Field({
   id,
   label,
-  hint,
+  qualifier,
   error,
   value,
   onChange,
@@ -280,7 +327,8 @@ function Field({
 }: {
   id: keyof QuotePayload & string;
   label: string;
-  hint?: string;
+  /** Right-aligned note on the label row. An asterisk cannot say "either/or". */
+  qualifier?: string;
   error?: string;
   value: string;
   onChange: (value: string) => void;
@@ -289,31 +337,54 @@ function Field({
   // signatures union and every call site becomes ambiguous.
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "id" | "value" | "onChange" | "onBlur">) {
   return (
-    <div>
-      {/* Labels sit above the field. Placeholder-only labels disappear the
-          moment someone starts typing, which is the one place a cleaner look
-          measurably costs completions. */}
-      <label htmlFor={id} className="text-ink block text-sm font-medium">
-        {label}
-      </label>
-      {hint && <p className="text-ink-icon mt-1 text-sm">{hint}</p>}
-      <input
-        id={id}
-        name={id}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        onBlur={onBlur}
-        aria-invalid={error ? "true" : undefined}
-        aria-describedby={error ? `${id}-error` : undefined}
-        /* 16px minimum, or iOS zooms the viewport on focus. */
-        className="hairline bg-surface-2 text-ink focus:border-line-strong mt-2 min-h-11 w-full rounded-control border px-4 text-base outline-none"
-        {...props}
-      />
-      {error && (
-        <p id={`${id}-error`} className="text-alert-ink mt-2 text-sm">
-          {error}
-        </p>
-      )}
+    <div className="group">
+      <div className="flex items-baseline justify-between gap-4">
+        <label
+          htmlFor={id}
+          className="mono-wide text-ink-muted group-has-[:focus-visible]:text-ink transition-colors duration-250"
+        >
+          {label}
+        </label>
+        {qualifier && <span className="mono-label text-ink-icon">{qualifier}</span>}
+      </div>
+
+      <div
+        className="field-underline relative mt-3"
+        data-filled={value ? "" : undefined}
+        data-invalid={error ? "" : undefined}
+      >
+        <input
+          id={id}
+          name={id}
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={onBlur}
+          aria-invalid={error ? "true" : undefined}
+          // Points at a node that is always in the DOM, so the association
+          // never blinks in and out as validity changes.
+          aria-describedby={`${id}-error`}
+          /* 16px minimum, or iOS zooms the viewport on focus. */
+          className="text-ink caret-alert min-h-11 w-full bg-transparent pb-2 text-base outline-none"
+          {...props}
+        />
+        {/* The focus indicator. A 2px full-width bar at 17.3:1 — far past the
+            192px² that SC 2.4.11 wants for a field this size. */}
+        <span
+          aria-hidden
+          className="bg-ink absolute inset-x-0 -bottom-px h-0.5 origin-left scale-x-0 transition-transform duration-250 ease-out group-has-[:focus-visible]:scale-x-100 motion-reduce:transition-none"
+        />
+      </div>
+
+      {/* Reserved slot, always present: the message fades in with zero reflow. */}
+      <p
+        id={`${id}-error`}
+        className={
+          "text-alert-ink mt-2 min-h-6 text-sm transition-opacity duration-200 " +
+          (error ? "opacity-100" : "opacity-0")
+        }
+      >
+        {error}
+      </p>
     </div>
   );
 }

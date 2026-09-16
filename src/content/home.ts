@@ -155,15 +155,27 @@ export const lessons = {
   body: "One-on-one instruction in the Helena studio, on the actual machines — printers, slicing, materials, Bambu Studio and HueForge. You leave able to run a print start to finish on your own.",
 } as const;
 
+/**
+ * The contact headline, as a big / tiny / big stack.
+ *
+ * The tiny middle line is a grammatical hinge, so the three elements read as
+ * one sentence — which is also what makes a three-part heading accessible
+ * with no ARIA at all. The second big line is deliberately longer than the
+ * first so the stack widens as it goes.
+ *
+ * This states the site's strategic core at the moment it matters. Every large
+ * bureau — Xometry, Protolabs, Shapeways, Craftcloud, Slant3D — gates its
+ * funnel behind a CAD upload. Not one offers a path for a visitor holding a
+ * photo of a broken part, and that visitor is Kirk's entire market. The claim
+ * used to live in a 17px aside; it belongs at 132px.
+ */
 export const quoteSection = {
-  eyebrow: "Let's create something",
-  headline: ["Have an idea?", "Let's bring it to life."],
+  eyebrow: "Let's start there",
+  headline: {
+    lead: "All it takes",
+    hinge: "to start is",
+    /** The middle fragment gets the hollow red stroke — one word, not the line. */
+    tail: ["A ", "photo", " and a sentence"],
+  },
   body: reassurance,
-  /**
-   * The strategic core of the site. Every large bureau — Xometry, Protolabs,
-   * Shapeways, Craftcloud, Slant3D — gates its funnel behind a CAD upload.
-   * Not one offers a path for a visitor holding a JPEG of a broken part.
-   * That visitor is Kirk's entire market.
-   */
-  photoFirst: "No 3D file needed. A photo of what you want — or of what broke — is a perfectly good place to start.",
 } as const;
