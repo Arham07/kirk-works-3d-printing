@@ -117,6 +117,10 @@
   --radius-control: 8px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* The masthead spread only. Slow enough at the start that the compressed
+     wordmark registers as a shape, quick through the middle where it would
+     otherwise read as distorted type, soft at the end. */
+  --ease-spread: cubic-bezier(0.5, 0, 0.1, 1);
   --ease-in: cubic-bezier(0.55, 0.055, 0.675, 0.19);
 }
 
@@ -537,9 +541,9 @@
   -webkit-text-stroke-width: max(2px, 0.012em);
 }
 
-@keyframes kw-wordmark-in {
+@keyframes kw-wordmark-spread {
   from {
-    transform: translateY(0.18em) scale(1.04);
+    transform: scaleX(0.26);
   }
   to {
     transform: none;
@@ -575,30 +579,66 @@
   }
 }
 
+/*
+  Gated on the OS preference ALONE — deliberately not on .js[data-motion="on"]
+  like the reveal pre-states below.
+
+  That gate exists to stop content being stranded behind a GSAP chunk that
+  never arrives, and it comes with a 2.5s failsafe that flips the attribute
+  mid-session. Every animation here is self-completing CSS that depends on no
+  chunk at all, so the gate buys nothing and the failsafe is an active hazard:
+  MotionRoot re-reads navigator.connection AFTER hydration, and a network
+  estimate that drops to 2g between HTML parse and hydration would yank the
+  masthead to its finished state mid-spread. Nothing to strand, nothing to
+  fail safe from.
+*/
 @media (prefers-reduced-motion: no-preference) {
   /*
-    Transform only, and only 4% of overshoot: 2% either side of centre stays
-    inside the 16px gutter at the narrowest breakpoint, so the settle can never
-    push a scrollbar. The un-animated state is the identity state, which is
-    what every other visitor gets.
+    THE SPREAD. Sofia Sans Condensed at 0.26 of its width collapses into its
+    own stems: the word stops being letters and becomes a tight cluster of
+    vertical bars at the centre of the column. Releasing that compression is
+    the reference's whole gesture — bars spreading symmetrically outward and
+    widening into letterforms — obtained from one element and one transform,
+    without splitting a condensed face into per-letter spans.
+
+    0.26 is measured, not guessed. Its paired Lottie layers start 78.5px from
+    the centre and finish 295.5px from it, a ratio of 0.266, and 0.26 is the
+    value at which our own eleven characters still read as bars rather than as
+    squashed type — checked in the browser at 0.24, 0.34 and 0.46.
+
+    The curve is not --ease-out. That curve spends 83% of its travel in the
+    first 30% of the duration, which is precisely the twitch this replaces: it
+    would leave the compressed state on screen for about ten milliseconds.
+    --ease-spread holds the cluster long enough to be seen, crosses the band
+    where the type reads as merely distorted at speed, and lands soft.
+
+    scaleX only. The reference's bars are a constant height throughout, and a
+    scaleY would also drive the mark up under the translucent fixed header.
   */
-  .js[data-motion="on"] [data-wordmark] {
-    transform-origin: 50% 100%;
-    animation: kw-wordmark-in 900ms var(--ease-out) both;
+  [data-wordmark] {
+    transform-origin: 50% 50%;
+    animation: kw-wordmark-spread 720ms var(--ease-spread) both;
   }
 
-  .js[data-motion="on"] [data-bar] {
+  /*
+    The rule reaches full width BEFORE the word does — the reference's own
+    order, where the bar is already the width of the finished mark while the
+    letters are still clustered. It draws from the left because every other
+    rule on this site does; giving it the wordmark's centre origin would
+    introduce an axis of symmetry nothing else on the page shares.
+  */
+  [data-bar] {
     transform-origin: left center;
-    animation: kw-bar-in 900ms var(--ease-out) 150ms both;
+    animation: kw-bar-in 460ms var(--ease-out) 140ms both;
   }
 
   /* The H1 is an LCP candidate, so it moves but never fades. */
-  .js[data-motion="on"] [data-hero-h1] {
-    animation: kw-settle 800ms var(--ease-out) 250ms both;
+  [data-hero-h1] {
+    animation: kw-settle 800ms var(--ease-out) 300ms both;
   }
 
   /* Supporting blocks only — never the wordmark or the H1. */
-  .js[data-motion="on"] [data-hero-in] {
+  [data-hero-in] {
     animation: kw-fade-up 700ms var(--ease-out) var(--d, 300ms) both;
   }
 }

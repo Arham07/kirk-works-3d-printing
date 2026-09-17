@@ -101,6 +101,11 @@ Two hard rules:
   complete. An inline head script flips `data-motion="off"` after 2.5s if the
   motion layer never initialises.
 
+The hero masthead is the one deliberate exception to that gate. Its load
+sequence is self-completing CSS that waits on no chunk, so it is gated on the
+OS motion preference alone — being inside `data-motion` would only expose it to
+a failsafe that could yank it mid-animation.
+
 ### Themes
 
 Dark is the default and matches the client's printed business card. Light is a
