@@ -542,14 +542,19 @@
    letter-spacing ever changes.
 
    Measured for mixed case: "KirkWorks3D" is 4.31em, against 4.86em for
-   "KIRKWORKS3D" — seven cap-width glyphs became x-height ones — so the same
-   column now carries a face a fifth larger. Tracking loosened with it, from
-   -0.045em to -0.03em: the tighter value is a caps value, and it closes the
-   lowercase counters at this size.
+   "KIRKWORKS3D". Tracking loosened with it, from -0.045em to -0.03em: the
+   tighter value is a caps value and it closes the lowercase counters here.
+
+   The mark no longer spans the column, and that is deliberate. Spanning it
+   would set the face at 303px, because a word 14% narrower needs a face that
+   much larger to reach the same edge — a side effect of the case change, not
+   a decision. 4.9 puts it back at the 268px it read at in capitals and leaves
+   about 150px of air on the right, which the full-width bar beneath it frames
+   and the photograph fills.
    ========================================================================== */
 [data-wordmark] {
-  font-size: 21.0vw;
-  font-size: calc(100cqw / 4.33);
+  font-size: 18.6vw;
+  font-size: calc(100cqw / 4.9);
   font-weight: 700;
   line-height: 0.8;
   letter-spacing: -0.03em;
