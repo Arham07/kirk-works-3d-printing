@@ -1,4 +1,4 @@
-import { thesis, reassurance } from "@/content/home";
+import { thesis, reassurance, studioShots } from "@/content/home";
 import { Photo } from "@/components/media/Photo";
 import { Container, Section } from "@/design/Section";
 
@@ -8,10 +8,16 @@ import { Container, Section } from "@/design/Section";
  * of the page — it is the one thing a one-person shop has that a bureau with
  * a warehouse structurally cannot copy.
  *
- * The photograph is the proof of that sentence. "You work directly with Kirk"
- * is a claim; a desk with one chair at it, in a spare room in Helena, is the
- * evidence. It is also the second time the visitor sees the studio, which was
- * the whole point of the client's note about the first screen.
+ * The photographs are the proof of that sentence. "You work directly with
+ * Kirk" is a claim; one chair at one desk, a bench with the dryers on it and
+ * a shelf of finished work in a spare room in Helena is the evidence. It is
+ * also the second and third time the visitor sees the studio, which was the
+ * whole point of the client's note about the first screen.
+ *
+ * The right-hand pair is offset rather than aligned, and the two drift in
+ * opposite directions on scroll (`data-parallax`). Two portraits set level
+ * read as one flat block; staggered and moving apart they read as one bench
+ * seen past another. The offsets are small — it should be felt, not watched.
  */
 export function Thesis() {
   return (
@@ -33,11 +39,14 @@ export function Thesis() {
                 away the part that carries the argument. */}
             <figure className="hairline rounded-media mt-10 overflow-hidden border">
               <Photo
-                slug="design-workstation"
-                alt="Kirk's desk in the Helena studio: one chair, two monitors and a laptop with the slicer open."
+                slug={studioShots.setup.slug}
+                alt={studioShots.setup.alt}
                 sizes="(min-width: 64rem) 40vw, 100vw"
                 className="w-full"
               />
+              <figcaption className="hairline mono-label border-t p-5">
+                {studioShots.setup.caption}
+              </figcaption>
             </figure>
           </div>
 
@@ -56,9 +65,45 @@ export function Thesis() {
             <p className="mono-label pt-2">
               Kirk Edmunds · Owner / 3D print specialist
             </p>
+
+            {/*
+              The staggered pair. The second column starts lower and the two
+              drift apart as they pass, which is what fills the dead space
+              beside the tall photograph without simply repeating it.
+            */}
+            <div className="grid grid-cols-2 gap-4 pt-4 lg:gap-6">
+              <figure
+                data-parallax="-22"
+                className="hairline rounded-media overflow-hidden border"
+              >
+                <Photo
+                  slug={studioShots.assembly.slug}
+                  alt={studioShots.assembly.alt}
+                  sizes="(min-width: 64rem) 22vw, 45vw"
+                  className="w-full"
+                />
+                <figcaption className="hairline mono-label border-t p-4">
+                  {studioShots.assembly.caption}
+                </figcaption>
+              </figure>
+
+              <figure
+                data-parallax="16"
+                className="hairline rounded-media mt-10 overflow-hidden border lg:mt-16"
+              >
+                <Photo
+                  slug={studioShots.shelf.slug}
+                  alt={studioShots.shelf.alt}
+                  sizes="(min-width: 64rem) 22vw, 45vw"
+                  className="w-full"
+                />
+                <figcaption className="hairline mono-label border-t p-4">
+                  {studioShots.shelf.caption}
+                </figcaption>
+              </figure>
+            </div>
           </div>
         </div>
-
       </Container>
     </Section>
   );

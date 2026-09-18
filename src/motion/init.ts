@@ -137,6 +137,39 @@ function initPlates() {
   });
 }
 
+function initParallax() {
+  /*
+    Two photographs side by side at different offsets read as one flat block
+    until they move at different rates. This is what makes a staggered pair
+    look deliberate rather than like a grid that failed to line up.
+
+    Deliberately small: `data-parallax` is the pixel offset each element
+    starts and ends at, and anything past about 40 sells the gimmick rather
+    than the depth. Transform only, so it costs a composite and never a
+    layout, and the element sits at its authored position when this never
+    runs.
+  */
+  gsap.utils.toArray<HTMLElement>("[data-parallax]").forEach((el) => {
+    const shift = Number(el.dataset.parallax);
+    if (!Number.isFinite(shift) || shift === 0) return;
+
+    gsap.fromTo(
+      el,
+      { y: shift },
+      {
+        y: -shift,
+        ease: "none",
+        scrollTrigger: {
+          trigger: el,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 0.6,
+        },
+      },
+    );
+  });
+}
+
 function initCounters() {
   // Scrub a proxy object and snap, rather than tweening textContent directly —
   // tweening a string property produces fractional garbage mid-flight.
@@ -191,6 +224,7 @@ export function initMotion() {
     initReveals();
     initRules();
     initPlates();
+    initParallax();
     initCounters();
     initDrawings();
 
@@ -215,6 +249,7 @@ export function initMotion() {
     gsap.set("[data-reveal]", { opacity: 1, y: 0, clearProps: "all" });
     gsap.set("[data-rule]", { scaleX: 1, clearProps: "all" });
     gsap.set("[data-plate]", { clipPath: "none" });
+    gsap.set("[data-parallax]", { y: 0, clearProps: "all" });
     document.documentElement.dataset.motion = "off";
   });
 

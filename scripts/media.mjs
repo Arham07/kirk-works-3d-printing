@@ -36,8 +36,22 @@ async function readSidecar(slug) {
 
 /** One rendered variant: a whole photo, or a named crop of it. */
 async function renderVariant({ slug, buffer, crop }) {
-  const probe = sharp(buffer).rotate();
-  const { width: srcWidth, height: srcHeight } = await probe.metadata();
+  /*
+    sharp's .rotate() is LAZY: metadata() on the pipeline still reports the
+    stored dimensions, not the auto-oriented ones. EXIF orientations 5-8 are
+    the quarter turns, so for those the real output is the source transposed.
+
+    Every photo in the first batch was stored upright, so this never showed.
+    The first phone photo that was not — an assembly-desk shot stored 640x480
+    with orientation 6 — wrote 640x480 into the manifest for a file that is
+    genuinely 480x640, which <Photo> then put straight into the img's width
+    and height attributes. That is a wrong aspect box and a layout shift, in
+    the one component whose docstring promises neither.
+  */
+  const meta = await sharp(buffer).metadata();
+  const turned = meta.orientation >= 5 && meta.orientation <= 8;
+  const srcWidth = turned ? meta.height : meta.width;
+  const srcHeight = turned ? meta.width : meta.height;
 
   let region = null;
   if (crop) {

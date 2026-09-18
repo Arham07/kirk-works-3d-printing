@@ -29,6 +29,30 @@ export const thesis = {
  * It answers the real objection — "I don't know how to ask for this" — which
  * is the objection every large print bureau structurally ignores.
  */
+/**
+ * The three photographs in the "Working with Kirk" section. Captions rather
+ * than bare images: the point of this section is that one person does all of
+ * it, and naming each bench is what turns three pictures of a spare room into
+ * an account of how the work actually moves through it.
+ */
+export const studioShots = {
+  setup: {
+    slug: "design-workstation",
+    alt: "Kirk's computer setup in the Helena studio: one chair, two monitors and a laptop with the slicer open.",
+    caption: "The computer setup — where every job is modelled and sliced",
+  },
+  assembly: {
+    slug: "assembly-desk",
+    alt: "The assembly desk: a laptop, two filament dryers and finished prints waiting on the bench, with shelves of filament alongside.",
+    caption: "The assembly desk",
+  },
+  shelf: {
+    slug: "f1-display-pair",
+    alt: "Finished pieces on the studio shelf: the Formula One track calendar and the Red Bull steering wheel, above the filament store.",
+    caption: "Finished work, before it is packed",
+  },
+} as const;
+
 export const reassurance =
   "You don't need to understand 3D printing or have every detail figured out. Tell me what you have in mind and I'll help work out the best way forward.";
 
