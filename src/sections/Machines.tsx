@@ -55,11 +55,21 @@ export function Machines() {
           className="hairline rounded-media mt-12 overflow-hidden border lg:mt-14"
           data-reveal
         >
+          {/*
+            Cropped to a band, not run at its native 3:4. The source is a
+            portrait phone photograph, so full width put it at 1870px tall on
+            a desktop — two screens of scrolling for one shelf. The subject is
+            a horizontal row of three machines, which is the one thing a
+            portrait frame is wrong for, so the crop takes the row and drops
+            the ceiling above it and the storage bins below.
+          */}
           <Photo
             slug="printer-rack-straight"
             alt="The three printers on one rack in the Helena studio: a Creality K2 Plus and two Bambu Lab machines, each with its filament system on the shelf above."
+            treatment="crop"
             sizes="(min-width: 64rem) 84vw, 100vw"
-            className="w-full"
+            className="aspect-4/3 w-full sm:aspect-16/9 lg:aspect-[21/9]"
+            imgClassName="object-[50%_58%]"
           />
           <figcaption className="hairline mono-label border-t p-5">
             {machines.map((machine) => machine.name).join(" · ")}
