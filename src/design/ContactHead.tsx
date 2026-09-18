@@ -28,7 +28,7 @@ export function ContactHeadline({
 
   return (
     <Tag
-      className={cn("font-display text-ink text-center uppercase", className)}
+      className={cn("font-display text-ink text-center", className)}
       {...(rise ? { "data-rise-mask": "" } : {})}
     >
       <span className="text-display-1 block" {...(rise ? { "data-rise": "" } : {})}>

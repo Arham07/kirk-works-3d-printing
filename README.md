@@ -50,12 +50,23 @@ character for character or local search treats it as a different business.
 
 The site's argument is that this work is *measurable*, so a single invented
 figure would discredit every real one. Values the client has not confirmed are
-the `TBD` sentinel from `src/content/types.ts`, and they render as an amber
-placeholder rather than a plausible guess.
+the `TBD` sentinel from `src/content/types.ts`.
+
+They no longer reach the page. A spec row where none of the three machines has
+a confirmed value is dropped, a HueForge counter with no number is dropped, and
+a price band says "Quoted per project" — which is the truth, and reads as a
+policy rather than as a gap. Thirty-nine dashes used to render on the home page
+and a visitor read them as a half-built site, which costs more than the missing
+figure does. Nothing is invented in either version; what changed is who sees
+the gaps.
+
+That makes this script the only channel that surfaces them, so it earns its
+keep now:
 
 ```bash
-npm run check:tbd            # report
-npm run check:tbd -- --strict  # exit 1 if any remain — run before deploying
+npm run check:tbd             # report
+npm run check:tbd -- --client # a plain-English list to send the client
+npm run check:tbd -- --strict # exit 1 if any remain — run before deploying
 ```
 
 There is a related rule in the media pipeline: **no AI-generated imagery of
@@ -94,8 +105,9 @@ Two hard rules:
 
 - **Nothing on the LCP path animates.** Chrome computes LCP from the painted,
   unclipped intersection, so a fade or a clip mask disqualifies an element
-  while `transform` does not. The LCP element on `/` is the hero wordmark; it
-  and the headlines paint finished and only ever move.
+  while `transform` does not. Headlines paint finished and only ever move. The
+  LCP element on `/` is the hero photograph — the one `priority` image on the
+  site — and it does not animate at all.
 - **Every animated state has a valid finished state on the other side.** With
   JavaScript off, reduced motion on, or the chunk failing to load, the page is
   complete. An inline head script flips `data-motion="off"` after 2.5s if the

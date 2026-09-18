@@ -1,5 +1,5 @@
 import { pricing } from "@/content/home";
-import { SpecValue } from "@/design/Spec";
+import { isTbd } from "@/content/types";
 import { Container, Section, SectionHead } from "@/design/Section";
 
 /**
@@ -8,8 +8,10 @@ import { Container, Section, SectionHead } from "@/design/Section";
  * without enquiring, and every commission craftsman worth studying publishes
  * a range and the factors behind it.
  *
- * The bands are TBD until Kirk sets them, and they render as visible
- * placeholders rather than invented figures.
+ * The starting figures are not set yet. Until they are, each band says so in
+ * words rather than showing a dash: a customer reading "— —" where a price
+ * belongs concludes the site is half-built, which costs more than the missing
+ * number does. Nothing is invented either way.
  */
 export function Pricing() {
   return (
@@ -33,8 +35,14 @@ export function Pricing() {
                   <dt className="text-ink text-lg">{band.label}</dt>
                   <p className="text-ink-icon mt-1 text-sm">{band.note}</p>
                 </div>
-                <dd className="font-display text-ink shrink-0 text-3xl tabular-nums">
-                  <SpecValue value={band.from} />
+                <dd
+                  className={
+                    isTbd(band.from)
+                      ? "text-ink-muted max-w-40 shrink-0 text-right text-sm"
+                      : "font-display text-ink shrink-0 text-3xl tabular-nums"
+                  }
+                >
+                  {isTbd(band.from) ? pricing.unsetNote : band.from}
                 </dd>
               </div>
             ))}

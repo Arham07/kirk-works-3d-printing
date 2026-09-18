@@ -17,7 +17,7 @@ export function isTbd<T>(value: Confirmed<T>): value is Tbd {
 
 /** One row of the mono spec strip that hangs off every image and card. */
 export type Spec = {
-  /** Short uppercase label, e.g. "LAYER HEIGHT". */
+  /** Short label, sentence case, e.g. "Layer height". */
   label: string;
   /** The measured value, e.g. "0.08mm". TBD until Kirk confirms it. */
   value: Confirmed<string>;

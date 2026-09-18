@@ -143,7 +143,7 @@ export function SectionHead({
           {eyebrow && <span>{eyebrow}</span>}
         </p>
       )}
-      <h2 className="font-display text-display-2 text-ink uppercase text-balance">
+      <h2 className="font-display text-display-2 text-ink text-balance">
         {headline}
       </h2>
       {deck && <p className="text-deck text-ink-muted mt-6 text-pretty">{deck}</p>}

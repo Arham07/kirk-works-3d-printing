@@ -2,7 +2,7 @@ import { stack } from "@/content/home";
 import { PhotoCard } from "@/components/media/Photo";
 import { HueforgeStack } from "@/drawings/HueforgeStack";
 import { StackScrubber } from "@/sections/stack/StackScrubber";
-import { SpecValue } from "@/design/Spec";
+import { isTbd } from "@/content/types";
 import { Container, Section } from "@/design/Section";
 
 /** Shared between the rail element and the scrubber that drives it. */
@@ -22,6 +22,8 @@ const RAIL_ID = "stack-rail";
  * rebuild exists to fix.
  */
 export function Stack() {
+  const counters = stack.counters.filter((counter) => !isTbd(counter.value));
+
   return (
     <Section label="How a HueForge is made" id="stack" surface="raised">
       <Container>
@@ -31,7 +33,7 @@ export function Stack() {
             <span aria-hidden className="h-px w-6 bg-current opacity-40" />
             {stack.eyebrow}
           </p>
-          <h2 className="font-display text-display-1 text-ink mt-6 uppercase text-balance">
+          <h2 className="font-display text-display-1 text-ink mt-6 text-balance">
             {stack.headline}
           </h2>
           <p className="text-deck text-ink-muted mt-7 text-pretty">{stack.body}</p>
@@ -72,19 +74,25 @@ export function Stack() {
           </div>
         </div>
 
-        <dl
-          className="hairline mt-16 grid grid-cols-2 gap-px border-t md:grid-cols-5"
-          data-reveal
-        >
-          {stack.counters.map((counter) => (
-            <div key={counter.label} className="pt-6">
-              <dd className="font-display text-ink text-4xl tabular-nums lg:text-5xl">
-                <SpecValue value={counter.value} />
-              </dd>
-              <dt className="mono-label mt-2.5">{counter.label}</dt>
-            </div>
-          ))}
-        </dl>
+        {/* A counter with no number is not a counter. Until Kirk reads these
+            off the project file the strip simply is not here — five dashes
+            under the most technical section on the site would undercut the
+            exact claim the section exists to make. */}
+        {counters.length > 0 && (
+          <dl
+            className="hairline mt-16 grid grid-cols-2 gap-px border-t md:grid-cols-5"
+            data-reveal
+          >
+            {counters.map((counter) => (
+              <div key={counter.label} className="pt-6">
+                <dd className="font-display text-ink text-4xl tabular-nums lg:text-5xl">
+                  {counter.value}
+                </dd>
+                <dt className="mono-label mt-2.5">{counter.label}</dt>
+              </div>
+            ))}
+          </dl>
+        )}
 
         <ol className="mt-16 grid gap-px md:grid-cols-2 lg:grid-cols-4">
           {stack.phases.map((phase, index) => (
@@ -92,7 +100,7 @@ export function Stack() {
               <span className="mono-label text-ink-icon">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <h3 className="font-display text-ink mt-4 text-xl uppercase">
+              <h3 className="font-display text-ink mt-4 text-xl">
                 {phase.label}
               </h3>
               <p className="text-ink-muted mt-2.5 text-[0.9375rem] text-pretty">

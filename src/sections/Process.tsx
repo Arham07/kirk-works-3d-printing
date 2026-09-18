@@ -35,7 +35,7 @@ export function Process() {
               >
                 {step.number}
               </span>
-              <h3 className="font-display text-ink mt-6 text-xl uppercase text-balance">
+              <h3 className="font-display text-ink mt-6 text-xl text-balance">
                 {step.title}
               </h3>
               <p className="text-ink-muted mt-3 flex-1 text-[0.9375rem] text-pretty">

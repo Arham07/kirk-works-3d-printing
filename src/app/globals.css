@@ -72,14 +72,22 @@
   /* Type scale. Tracking is a function of size, applied once here, never
      per-component. Two extremes — very tight display, very open mono — and
      nothing at neutral tracking. That contrast is the typographic signature. */
+  /*
+    Line-heights are at/above 1 and tracking is well off the floor, both
+    because the display face is now set in MIXED CASE. Sub-1 leading and
+    -0.045em are caps values: caps have no descenders and uniform widths, so
+    they tolerate both. Set "Custom 3D printing" or "A photograph, taken
+    apart." at 0.92 and the p and the g of one line land in the ascenders of
+    the next; take the tracking that tight and the round pairs collide.
+  */
   --text-display-1: clamp(3.5rem, 11vw, 8.25rem);
-  --text-display-1--line-height: 0.92;
-  --text-display-1--letter-spacing: -0.045em;
+  --text-display-1--line-height: 1;
+  --text-display-1--letter-spacing: -0.03em;
   --text-display-1--font-weight: 700;
 
   --text-display-2: clamp(2.5rem, 6.5vw, 4.75rem);
-  --text-display-2--line-height: 0.95;
-  --text-display-2--letter-spacing: -0.04em;
+  --text-display-2--line-height: 1.02;
+  --text-display-2--letter-spacing: -0.028em;
   --text-display-2--font-weight: 700;
 
   /*
@@ -88,8 +96,8 @@
     air above text-h3's 32px ceiling.
   */
   --text-display-3: clamp(2rem, 4.4vw, 3.5rem);
-  --text-display-3--line-height: 0.95;
-  --text-display-3--letter-spacing: -0.035em;
+  --text-display-3--line-height: 1.02;
+  --text-display-3--letter-spacing: -0.025em;
   --text-display-3--font-weight: 700;
 
   --text-h3: clamp(1.5rem, 3vw, 2rem);
@@ -264,7 +272,14 @@
   color: var(--color-alert);
   @supports (-webkit-text-stroke: 1px currentcolor) {
     color: transparent;
-    -webkit-text-stroke: 2px var(--color-alert);
+    /*
+      Em-relative, not a flat 2px, because these headlines are set in mixed
+      case now. A lowercase o at display-1's 56px floor has a counter about
+      8px across; 2px of stroke on each side closes it and the word goes solid
+      red. 0.018em is 1px there and 2.4px at the 132px ceiling, so the outline
+      stays an outline at both ends.
+    */
+    -webkit-text-stroke: max(1px, 0.018em) var(--color-alert);
     paint-order: stroke fill;
   }
 }
@@ -522,23 +537,29 @@
    correct at common widths and only drifts once the 90rem cap engages.
 
    The divisor is the measured width of the word in em at this weight and
-   tracking, plus the 0.045em of negative tracking that trails the last glyph.
-   Re-measure it if the display face, its weight or --text-display-1's
+   tracking, plus the trailing negative tracking after the last glyph.
+   Re-measure it if the display face, its weight, its CASING or its
    letter-spacing ever changes.
+
+   Measured for mixed case: "KirkWorks3D" is 4.31em, against 4.86em for
+   "KIRKWORKS3D" — seven cap-width glyphs became x-height ones — so the same
+   column now carries a face a fifth larger. Tracking loosened with it, from
+   -0.045em to -0.03em: the tighter value is a caps value, and it closes the
+   lowercase counters at this size.
    ========================================================================== */
 [data-wordmark] {
-  font-size: 18.7vw;
-  font-size: calc(100cqw / 4.87);
+  font-size: 21.0vw;
+  font-size: calc(100cqw / 4.33);
   font-weight: 700;
   line-height: 0.8;
-  letter-spacing: -0.045em;
+  letter-spacing: -0.03em;
   white-space: nowrap;
 }
 
 /* The hollow WORKS echoes the printed card, where it is the only red. A fixed
    2px stroke reads as a hairline at 250px, so it scales past that size. */
 [data-wordmark] [data-outline] {
-  -webkit-text-stroke-width: max(2px, 0.012em);
+  -webkit-text-stroke-width: max(2px, 0.011em);
 }
 
 @keyframes kw-wordmark-spread {
@@ -640,6 +661,76 @@
   /* Supporting blocks only — never the wordmark or the H1. */
   [data-hero-in] {
     animation: kw-fade-up 700ms var(--ease-out) var(--d, 300ms) both;
+  }
+}
+
+/* ==========================================================================
+   G — THE HERO PHOTOGRAPH
+
+   A photograph behind live text is a contrast problem before it is a design
+   one. Ink over the scrimmed room has to clear 4.5:1 for the deck paragraph,
+   and against this photograph that needs the scrim at roughly 90% of the page
+   colour. A flat 90% wash would erase the room, which is the entire reason
+   the photograph is there.
+
+   So the scrim is a gradient keyed to where the text actually sits, not an
+   even veil:
+
+   - Below 64rem everything is one column, so it runs vertically. The room
+     reads at the top behind the wordmark, which is display type and only owes
+     3:1, then closes under the meta rule where body copy starts.
+   - At 64rem and up the text is capped at 58% of the column and the right of
+     the frame is left to the room, so it runs horizontally instead.
+
+   color-mix over --color-surface-0 rather than a literal colour, so the same
+   rule serves the light theme, where the requirement inverts and the scrim
+   has to be near-white for dark ink to survive.
+   ========================================================================== */
+[data-hero-scrim] {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-surface-0) 52%, transparent) 0%,
+    color-mix(in srgb, var(--color-surface-0) 68%, transparent) 22%,
+    color-mix(in srgb, var(--color-surface-0) 91%, transparent) 40%,
+    color-mix(in srgb, var(--color-surface-0) 96%, transparent) 62%,
+    var(--color-surface-0) 100%
+  );
+}
+
+/* Forced colours keeps the photograph but repaints the type, which lands
+   forced ink on an unforced room. Drop both layers and fall back to the flat
+   masthead the section already has behind them. */
+@media (forced-colors: active) {
+  [data-hero-scrim],
+  section[aria-label="Hero"] picture {
+    display: none;
+  }
+}
+
+@media (width >= 64rem) {
+  [data-hero-scrim] {
+    background:
+      linear-gradient(
+        to right,
+        var(--color-surface-0) 0%,
+        color-mix(in srgb, var(--color-surface-0) 95%, transparent) 42%,
+        color-mix(in srgb, var(--color-surface-0) 55%, transparent) 66%,
+        color-mix(in srgb, var(--color-surface-0) 28%, transparent) 100%
+      ),
+      /* A second pass under the whole frame. The top-right of this photograph
+         is a bright window and the masthead crosses it, and the bottom has to
+         reach the page colour outright or the section below it starts on a
+         hard cut through the carpet. */
+      linear-gradient(
+        to bottom,
+        color-mix(in srgb, var(--color-surface-0) 45%, transparent) 0%,
+        color-mix(in srgb, var(--color-surface-0) 18%, transparent) 30%,
+        color-mix(in srgb, var(--color-surface-0) 22%, transparent) 62%,
+        color-mix(in srgb, var(--color-surface-0) 62%, transparent) 88%,
+        var(--color-surface-0) 100%
+      );
   }
 }
 

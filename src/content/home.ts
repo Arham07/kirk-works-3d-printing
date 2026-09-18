@@ -79,7 +79,13 @@ export const process = [
  */
 export const pricing = {
   headline: "What it costs",
-  body: "Every piece is quoted individually, because the same shape can differ five-fold depending on size, material and color count. Here is roughly where things start.",
+  body: "Every piece is quoted individually, because the same shape can differ five-fold depending on size, material and color count. Tell me what you have in mind and you get a clear number before anything is committed.",
+  /**
+   * Shown in place of a starting figure until Kirk sets one. It is not a
+   * placeholder: it is the truthful answer, and it reads as a policy rather
+   * than as a missing value.
+   */
+  unsetNote: "Quoted per project",
   bands: [
     { label: "Small custom print", from: TBD, note: "A single piece from an existing model" },
     { label: "HueForge photo art", from: TBD, note: "Framed, from your photograph" },

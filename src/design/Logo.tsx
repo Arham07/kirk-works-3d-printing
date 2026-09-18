@@ -96,7 +96,7 @@ export function LogoLockup({
     <span className={cn("flex items-center gap-3", className)}>
       <LogoMark flat={flat} className="h-11 w-11 shrink-0" />
       <span className="flex flex-col leading-none">
-        <span className="font-display text-[1.375rem] leading-none font-bold tracking-tight uppercase">
+        <span className="font-display text-[1.375rem] leading-none font-bold tracking-tight">
           Kirk
           <span className={flat ? undefined : "text-alert"}>Works</span>3D
         </span>

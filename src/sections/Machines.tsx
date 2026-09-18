@@ -1,8 +1,10 @@
 import { buildVolumeCopy, machines } from "@/content/machines";
+import { isTbd } from "@/content/types";
+import { Photo } from "@/components/media/Photo";
 import { SpecValue } from "@/design/Spec";
 import { Container, Section, SectionHead } from "@/design/Section";
 
-const rows = [
+const allRows = [
   { key: "buildVolume", label: "Build volume" },
   { key: "nozzles", label: "Nozzles" },
   { key: "amsSlots", label: "AMS slots" },
@@ -10,6 +12,17 @@ const rows = [
   { key: "materials", label: "Materials" },
   { key: "bestFor", label: "Best for" },
 ] as const;
+
+/*
+  A row where not one of the three machines has a confirmed value is thirty
+  dashes wide and tells the reader nothing except that the site is unfinished.
+  Drop it. The sentinel stays in the content module and `npm run check:tbd`
+  stays the channel that says what is still missing — that report is for Kirk,
+  not for her customers.
+*/
+const rows = allRows.filter((row) =>
+  machines.some((machine) => !isTbd(machine[row.key])),
+);
 
 /**
  * The highest-credibility-per-byte section on the site, and it needs zero
@@ -20,6 +33,12 @@ const rows = [
  * The table is swapped for stacked cards below lg rather than scaled down —
  * a six-row, four-column table inside a horizontal scroller on a phone is
  * worse than no table.
+ *
+ * The photograph carries what the table currently cannot. Until Kirk reads the
+ * specs off the machines there are no numbers here, and a picture of the three
+ * of them on one rack — each with its own filament system above it — is a
+ * better answer to "how big an operation is this?" than three columns of
+ * dashes ever was.
  */
 export function Machines() {
   return (
@@ -31,6 +50,21 @@ export function Machines() {
           headline="Three machines. One person running them."
           deck="Every job is matched to the printer that suits it — which is a decision, not a default."
         />
+
+        <figure
+          className="hairline rounded-media mt-12 overflow-hidden border lg:mt-14"
+          data-reveal
+        >
+          <Photo
+            slug="printer-rack-straight"
+            alt="The three printers on one rack in the Helena studio: a Creality K2 Plus and two Bambu Lab machines, each with its filament system on the shelf above."
+            sizes="(min-width: 64rem) 84vw, 100vw"
+            className="w-full"
+          />
+          <figcaption className="hairline mono-label border-t p-5">
+            {machines.map((machine) => machine.name).join(" · ")}
+          </figcaption>
+        </figure>
 
         {/* Desktop: comparison grid. */}
         <div className="mt-14 hidden lg:block" data-reveal>
@@ -49,7 +83,7 @@ export function Machines() {
                     scope="col"
                     className="hairline border-b py-4 pr-6 align-bottom"
                   >
-                    <span className="font-display text-ink block text-2xl uppercase">
+                    <span className="font-display text-ink block text-2xl">
                       {machine.name}
                     </span>
                   </th>
@@ -83,7 +117,7 @@ export function Machines() {
         <ul className="mt-12 space-y-px lg:hidden">
           {machines.map((machine) => (
             <li key={machine.id} className="hairline border p-6" data-reveal>
-              <h3 className="font-display text-ink text-2xl uppercase">
+              <h3 className="font-display text-ink text-2xl">
                 {machine.name}
               </h3>
               <dl className="mono-label mt-5">
@@ -124,7 +158,7 @@ export function Machines() {
           className="hairline mt-14 grid gap-8 border-t pt-10 lg:grid-cols-[1fr_1.2fr]"
           data-reveal
         >
-          <h3 className="font-display text-ink text-3xl uppercase text-balance">
+          <h3 className="font-display text-ink text-3xl text-balance">
             {buildVolumeCopy.headline}
           </h3>
           <div className="space-y-4">

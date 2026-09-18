@@ -12,7 +12,7 @@ export default function ThanksPage() {
     <div className="py-20 lg:py-28">
       <Container width="narrow">
         <p className="mono-label">Quote request</p>
-        <h1 className="font-display text-display-2 text-ink mt-5 uppercase text-balance">
+        <h1 className="font-display text-display-2 text-ink mt-5 text-balance">
           That&rsquo;s on its way.
         </h1>
         <p className="text-deck text-ink-muted mt-6 text-pretty">

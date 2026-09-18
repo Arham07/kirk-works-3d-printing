@@ -93,7 +93,7 @@ export function SiteHeader() {
             <a
               key={item.href}
               href={item.href}
-              className="hairline font-display border-b py-5 text-3xl uppercase"
+              className="hairline font-display border-b py-5 text-3xl"
             >
               {item.label}
             </a>

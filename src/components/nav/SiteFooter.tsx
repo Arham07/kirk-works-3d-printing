@@ -74,7 +74,7 @@ export function SiteFooter() {
               <span className="mono-label text-ink-icon transition-colors duration-250 group-hover:text-alert-ink">
                 00-{index + 1}
               </span>
-              <span className="font-display text-ink text-[1.375rem] leading-none uppercase md:text-[1.625rem]">
+              <span className="font-display text-ink text-[1.375rem] leading-none md:text-[1.625rem]">
                 <span className="link-rule">{service.title}</span>
               </span>
             </a>
@@ -99,7 +99,7 @@ export function SiteFooter() {
           <a
             href={telHref}
             data-rise
-            className="font-display text-display-2 text-ink contact-rule inline-block uppercase"
+            className="font-display text-display-2 text-ink contact-rule inline-block"
           >
             {business.phoneDisplay}
           </a>

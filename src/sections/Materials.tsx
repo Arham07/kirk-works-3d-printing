@@ -46,7 +46,7 @@ export function Materials() {
                     scope="row"
                     className="hairline border-b py-5 pr-6 align-top"
                   >
-                    <span className="font-display text-ink text-2xl uppercase">
+                    <span className="font-display text-ink text-2xl">
                       {material.name}
                     </span>
                   </th>
@@ -69,7 +69,7 @@ export function Materials() {
         <ul className="mt-12 space-y-px md:hidden">
           {materials.map((material) => (
             <li key={material.id} className="hairline border p-6" data-reveal>
-              <h3 className="font-display text-ink text-2xl uppercase">
+              <h3 className="font-display text-ink text-2xl">
                 {material.name}
               </h3>
               <dl className="mono-label mt-4">
@@ -104,7 +104,7 @@ export function Materials() {
           className="hairline mt-16 grid gap-8 border-t pt-10 lg:grid-cols-[1fr_1.2fr]"
           data-reveal
         >
-          <h3 className="font-display text-ink text-3xl uppercase text-balance">
+          <h3 className="font-display text-ink text-3xl text-balance">
             {orientationCopy.headline}
           </h3>
           <p className="text-ink-muted text-pretty">{orientationCopy.body}</p>

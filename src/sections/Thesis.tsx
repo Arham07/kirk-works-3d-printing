@@ -1,4 +1,5 @@
 import { thesis, reassurance } from "@/content/home";
+import { Photo } from "@/components/media/Photo";
 import { Container, Section } from "@/design/Section";
 
 /**
@@ -6,6 +7,11 @@ import { Container, Section } from "@/design/Section";
  * a full section. No competitor in the scan puts a named human at the centre
  * of the page — it is the one thing a one-person shop has that a bureau with
  * a warehouse structurally cannot copy.
+ *
+ * The photograph is the proof of that sentence. "You work directly with Kirk"
+ * is a claim; a desk with one chair at it, in a spare room in Helena, is the
+ * evidence. It is also the second time the visitor sees the studio, which was
+ * the whole point of the client's note about the first screen.
  */
 export function Thesis() {
   return (
@@ -18,9 +24,21 @@ export function Thesis() {
               <span aria-hidden className="h-px w-6 bg-current opacity-40" />
               {thesis.eyebrow}
             </p>
-            <h2 className="font-display text-display-2 text-ink mt-5 uppercase text-balance">
+            <h2 className="font-display text-display-2 text-ink mt-5 text-balance">
               {thesis.headline}
             </h2>
+
+            {/* Native 3:4, not cropped to a band: every one of these sources is
+                a portrait phone photograph, and a 16:9 slice through one throws
+                away the part that carries the argument. */}
+            <figure className="hairline rounded-media mt-10 overflow-hidden border">
+              <Photo
+                slug="design-workstation"
+                alt="Kirk's desk in the Helena studio: one chair, two monitors and a laptop with the slicer open."
+                sizes="(min-width: 64rem) 40vw, 100vw"
+                className="w-full"
+              />
+            </figure>
           </div>
 
           <div data-reveal className="space-y-6">
@@ -40,6 +58,7 @@ export function Thesis() {
             </p>
           </div>
         </div>
+
       </Container>
     </Section>
   );

@@ -25,7 +25,7 @@ export function ServicesIndex() {
         <div className="flex items-end justify-between gap-8">
           <h2
             data-rise-mask
-            className="font-display text-display-1 text-ink uppercase"
+            className="font-display text-display-1 text-ink"
           >
             <span data-rise className="block">
               Services
@@ -84,7 +84,7 @@ export function ServicesIndex() {
                 <span className="min-w-0 flex-1">
                   <span
                     className={
-                      "font-display text-display-3 text-ink block uppercase " +
+                      "font-display text-display-3 text-ink block " +
                       "transition-transform duration-450 ease-out " +
                       "motion-safe:group-hover/row:translate-x-3"
                     }

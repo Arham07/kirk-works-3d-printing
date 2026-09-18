@@ -115,7 +115,7 @@ export function FeaturedWork() {
                     <p className="mono-label text-ink-icon">{piece.partNumber}</p>
                     <h3
                       data-deck-title
-                      className="font-display text-ink mt-3 text-3xl uppercase text-balance"
+                      className="font-display text-ink mt-3 text-3xl text-balance"
                     >
                       {piece.name}
                     </h3>

@@ -45,7 +45,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
             <span className="text-ink-muted">{service.eyebrow}</span>
           </nav>
 
-          <h1 className="font-display text-display-1 text-ink mt-7 uppercase">
+          <h1 className="font-display text-display-1 text-ink mt-7">
             {service.h1[0]}
             <br />
             <span className="text-outline-alert">{service.h1[1]}</span>
@@ -92,7 +92,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
           <dl className="mt-8 grid gap-px sm:grid-cols-2">
             {service.covers.map((item) => (
               <div key={item.name} className="hairline border p-7" data-reveal>
-                <dt className="font-display text-ink text-2xl uppercase text-balance">
+                <dt className="font-display text-ink text-2xl text-balance">
                   {item.name}
                 </dt>
                 <dd className="text-ink-muted mt-3 text-[0.9375rem] text-pretty">
@@ -110,7 +110,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
         <Container>
           <div className="grid gap-10 lg:grid-cols-[1fr_1.25fr] lg:gap-20">
             <h2
-              className="font-display text-display-2 text-ink uppercase text-balance"
+              className="font-display text-display-2 text-ink text-balance"
               data-reveal
             >
               {service.insight.headline}
@@ -156,7 +156,7 @@ export function ServicePageLayout({ service }: { service: ServicePage }) {
 
       <Section label="Questions" surface="raised">
         <Container>
-          <h2 className="font-display text-display-2 text-ink uppercase" data-reveal>
+          <h2 className="font-display text-display-2 text-ink" data-reveal>
             Questions about this
           </h2>
           {/* Same component as the home page, single column: these routes
